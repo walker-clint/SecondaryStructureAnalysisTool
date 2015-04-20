@@ -78,7 +78,7 @@
 								<SolidColorBrush Color="#FFDEDEDE"/>
 							</TextBox.Background>
 						</TextBox>
-						<TextBox x:Name="AccessionNumber_Copy" Text="{Binding AccessionNumber}" Margin="15.024,203.07,71.782,2.663" FontSize="8" VerticalAlignment="Center" HorizontalAlignment="Center" Width="202.052" Height="20.267" Background="#FFDEDEDE"/>
+						<TextBox x:Name="AccessionNumber_Copy" Text="{Binding Name}" Margin="15.024,203.07,71.782,2.663" FontSize="8" VerticalAlignment="Center" HorizontalAlignment="Center" Width="202.052" Height="20.267" Background="#FFDEDEDE"/>
 						<Label Content="Name of Sequence" HorizontalAlignment="Left" Margin="10,183.07,0,0" VerticalAlignment="Top" Height="20" Width="79" FontSize="8"/>
 						<CheckBox x:Name="BadSequenceData" Content="" IsChecked="{Binding BadSequence}" Checked="BadSequenceData_Checked" Unchecked="BadSequenceData_Checked" HorizontalAlignment="Left" Margin="-104.506,191.094,0,0" Grid.Row="1" VerticalAlignment="Top" Visibility="Hidden">
 							
