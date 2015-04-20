@@ -12,3 +12,18 @@ C:\Users\Clinton\Documents\Visual Studio 2013\Projects\SecondaryStructureTool\Se
 C:\Users\Clinton\Documents\Visual Studio 2013\Projects\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\SecondaryStructureTool.pdb
 C:\Users\Clinton\Documents\Visual Studio 2013\Projects\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\SecondaryStructureTool_MarkupCompile.lref
 C:\Users\Clinton\documents\visual studio 2013\Projects\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\App.baml
+C:\Users\Clinton\Documents\GitHub\SecondaryStructureAnalysisTool\SecondaryStructureTool\SecondaryStructureTool\bin\Debug\SecondaryStructureTool.exe.config
+C:\Users\Clinton\Documents\GitHub\SecondaryStructureAnalysisTool\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\SecondaryStructureTool.exe
+C:\Users\Clinton\Documents\GitHub\SecondaryStructureAnalysisTool\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\SecondaryStructureTool.pdb
+C:\Users\Clinton\Documents\GitHub\SecondaryStructureAnalysisTool\SecondaryStructureTool\SecondaryStructureTool\bin\Debug\SecondaryStructureTool.exe
+C:\Users\Clinton\Documents\GitHub\SecondaryStructureAnalysisTool\SecondaryStructureTool\SecondaryStructureTool\bin\Debug\SecondaryStructureTool.pdb
+C:\Users\Clinton\Documents\GitHub\SecondaryStructureAnalysisTool\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\SecondaryStructureTool.csprojResolveAssemblyReference.cache
+C:\Users\Clinton\Documents\GitHub\SecondaryStructureAnalysisTool\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\App.baml
+C:\Users\Clinton\Documents\GitHub\SecondaryStructureAnalysisTool\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\MainWindow.g.cs
+C:\Users\Clinton\Documents\GitHub\SecondaryStructureAnalysisTool\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\App.g.cs
+C:\Users\Clinton\Documents\GitHub\SecondaryStructureAnalysisTool\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\SecondaryStructureTool_MarkupCompile.cache
+C:\Users\Clinton\Documents\GitHub\SecondaryStructureAnalysisTool\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\SecondaryStructureTool_MarkupCompile.lref
+C:\Users\Clinton\Documents\GitHub\SecondaryStructureAnalysisTool\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\MainWindow.baml
+C:\Users\Clinton\Documents\GitHub\SecondaryStructureAnalysisTool\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\SecondaryStructureTool.g.resources
+C:\Users\Clinton\Documents\GitHub\SecondaryStructureAnalysisTool\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\SecondaryStructureTool.Properties.Resources.resources
+C:\Users\Clinton\Documents\GitHub\SecondaryStructureAnalysisTool\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\SecondaryStructureTool.csproj.GenerateResource.Cache

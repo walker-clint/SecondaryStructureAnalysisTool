@@ -132,34 +132,24 @@ namespace SecondaryStructureTool.DataModel
             if (FASTA[0] == '>')
             {
                 int holder = 1;
-                char[] delimiterChars = { ':', ';', '|', '=', '\n', '\r' };
+                char[] delimiterChars = {'|', '\n', '\r' };
                 string[] tokens = FASTA.Split(delimiterChars);
                 foreach (string s in tokens){
                     System.Console.WriteLine(s);
-                    
-                    if (nameStart && holder == 0)
+                    AccessionNumber = tokens[3];
+                    Name = tokens[4];
+                    for (var i = 5; i < tokens.Length; ++i)
                     {
-                        Name = s;
-                        holder = 1;
-                        nameStart = false;
+                        if (tokens[i] == "")
+                        {
+                            
+                        }
+                        else
+                        {
+                            Sequence += tokens[i];
+                        }
+                       
                     }
-                    else if (nameStart)
-                    {
-                        holder--;
-                    }
-                    if (s.Contains("RecName"))
-                    {
-                        nameStart = true;
-                    }
-                    if (s.Length > 50)
-                    {
-                        seqStart = true;
-                    }
-                    if (seqStart)
-                    {
-                        Sequence += s;
-                    }
-                    
                 }
 
             } else {

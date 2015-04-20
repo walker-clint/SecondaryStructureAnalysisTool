@@ -25,6 +25,7 @@ namespace SecondaryStructureTool
     {
         private SetupData setupData;
         private HydropathyPlotter hydroPlotter;
+        private double height, width;
         public MainWindow()
         {
             InitializeComponent();
@@ -32,6 +33,8 @@ namespace SecondaryStructureTool
             Setup.DataContext = setupData;
             Results_Title.DataContext = setupData;
             hydroPlotter = new HydropathyPlotter();
+            height = PrimaryWindow.ActualHeight;
+            width = PrimaryWindow.ActualWidth;
         }
 
 
@@ -296,6 +299,38 @@ namespace SecondaryStructureTool
                     }  
                 } 
             }
+        }
+
+        private void UpdateSize(object sender, SizeChangedEventArgs e)
+        {
+            double newWidth = PrimaryWindow.ActualWidth;
+            double newHeight = PrimaryWindow.ActualHeight;
+
+            //if (newWidth > width && newHeight > height)
+            //{
+            //    //scale contents larger
+            //}
+            //if (newWidth < width && newHeight < height)
+            //{
+            //    //scale contents smaller
+            //}
+            if (newWidth > width && width != 0)
+            {
+                double expandVal = newWidth - width + 10;
+                double growVal = DataGridScroller.ActualWidth;
+                growVal += expandVal;
+                DataGridScroller.SetValue(Grid.WidthProperty, growVal);
+            }
+            if (newWidth < width && width != 0)
+            {
+                double expandVal = newWidth - width + 10;
+                double growVal = DataGridScroller.ActualWidth;
+                growVal += expandVal;
+                DataGridScroller.SetValue(Grid.WidthProperty, growVal);
+            }
+            width = PrimaryWindow.ActualWidth;
+            height = PrimaryWindow.ActualHeight;
+
         }
     }
 }
