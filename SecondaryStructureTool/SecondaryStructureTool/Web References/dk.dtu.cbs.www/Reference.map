@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DiscoveryClientResultsFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Results>
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://www.cbs.dtu.dk/ws/common/ws_common_1_0b.xsd" filename="ws_common_1_0b.xsd" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="http://www.cbs.dtu.dk/ws/TMHMM/TMHMM_2_0_ws1.wsdl" filename="TMHMM_2_0_ws1.wsdl" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.SchemaReference" url="http://www.cbs.dtu.dk/ws/TMHMM/ws_tmhmm_2_0_ws1.xsd" filename="ws_tmhmm_2_0_ws1.xsd" />
+  </Results>
+</DiscoveryClientResultsFile>

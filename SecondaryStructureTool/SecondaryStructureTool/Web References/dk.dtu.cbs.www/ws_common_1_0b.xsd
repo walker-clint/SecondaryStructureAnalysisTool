@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:tns="http://www.cbs.dtu.dk/ws/ws-common" xmlns:common="http://www.cbs.dtu.dk/ws/ws-common" elementFormDefault="unqualified" targetNamespace="http://www.cbs.dtu.dk/ws/ws-common" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:complexType name="sequence">
+    <xsd:sequence>
+      <xsd:element name="id">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:pattern value="\S+" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element minOccurs="0" name="comment">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:pattern value=".*" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element minOccurs="0" name="seq">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[A-Za-z\-\n]+" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="sequencedata">
+    <xsd:sequence>
+      <xsd:element maxOccurs="unbounded" name="sequence" type="common:sequence" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="anndata">
+    <xsd:sequence>
+      <xsd:element name="annsource">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="method">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:pattern value=".*" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="version">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:pattern value=".*" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element maxOccurs="unbounded" name="ann">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="sequence" type="common:sequence" />
+            <xsd:element name="annrecords">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="annrecord">
+                    <xsd:complexType>
+                      <xsd:sequence>
+                        <xsd:element name="feature">
+                          <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                              <xsd:pattern value=".*" />
+                            </xsd:restriction>
+                          </xsd:simpleType>
+                        </xsd:element>
+                        <xsd:choice>
+                          <xsd:element name="global" type="xsd:string" />
+                          <xsd:element name="pos" type="xsd:integer" />
+                          <xsd:element name="range">
+                            <xsd:complexType>
+                              <xsd:sequence>
+                                <xsd:element name="begin" type="xsd:integer" />
+                                <xsd:element name="end" type="xsd:integer" />
+                              </xsd:sequence>
+                            </xsd:complexType>
+                          </xsd:element>
+                        </xsd:choice>
+                        <xsd:element maxOccurs="unbounded" name="score">
+                          <xsd:complexType>
+                            <xsd:sequence>
+                              <xsd:element minOccurs="0" name="key" type="xsd:string" />
+                              <xsd:element name="value" type="xsd:float" />
+                            </xsd:sequence>
+                          </xsd:complexType>
+                        </xsd:element>
+                        <xsd:element minOccurs="0" name="strand">
+                          <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                              <xsd:enumeration value="+" />
+                              <xsd:enumeration value="-" />
+                            </xsd:restriction>
+                          </xsd:simpleType>
+                        </xsd:element>
+                        <xsd:element minOccurs="0" name="frame">
+                          <xsd:simpleType>
+                            <xsd:restriction base="xsd:integer">
+                              <xsd:enumeration value="0" />
+                              <xsd:enumeration value="1" />
+                              <xsd:enumeration value="2" />
+                            </xsd:restriction>
+                          </xsd:simpleType>
+                        </xsd:element>
+                        <xsd:element minOccurs="0" name="comment">
+                          <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                              <xsd:pattern value=".*" />
+                            </xsd:restriction>
+                          </xsd:simpleType>
+                        </xsd:element>
+                      </xsd:sequence>
+                    </xsd:complexType>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="EMBRACEdocument">
+    <xsd:sequence>
+      <xsd:element name="comment" type="xsd:string" />
+      <xsd:element name="encoding">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="none" />
+            <xsd:enumeration value="base64" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="MIMEtype">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="application/pdf" />
+            <xsd:enumeration value="application/postscript" />
+            <xsd:enumeration value="application/msword" />
+            <xsd:enumeration value="application/rtf" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="content" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="EMBRACEimage">
+    <xsd:sequence>
+      <xsd:element name="comment" type="xsd:string" />
+      <xsd:element name="encoding">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="none" />
+            <xsd:enumeration value="base64" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="MIMEtype">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="image/png" />
+            <xsd:enumeration value="image/bmp" />
+            <xsd:enumeration value="image/gif" />
+            <xsd:enumeration value="image/jpeg" />
+            <xsd:enumeration value="image/tiff" />
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:element>
+      <xsd:element name="content" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="seqinput">
+    <xsd:sequence>
+      <xsd:element name="parameters">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="sequences" type="common:sequences" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="pollQueue">
+    <xsd:sequence>
+      <xsd:element name="job">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="jobid" type="common:jobid" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="pollQueueResponse">
+    <xsd:sequence>
+      <xsd:element name="queueentry">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="jobid" type="common:jobid" />
+            <xsd:element name="datetime" type="xsd:string" />
+            <xsd:element name="status" type="common:jobstatus" />
+            <xsd:element minOccurs="0" name="expires" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="runServiceResponse">
+    <xsd:sequence>
+      <xsd:element name="queueentry">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="jobid" type="common:jobid" />
+            <xsd:element name="datetime" type="xsd:string" />
+            <xsd:element name="status" type="common:jobstatus" />
+            <xsd:element minOccurs="0" name="expires" type="xsd:string" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="jobstatus">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="UNKNOWN JOBID" />
+      <xsd:enumeration value="QUEUED" />
+      <xsd:enumeration value="REJECTED" />
+      <xsd:enumeration value="FINISHED" />
+      <xsd:enumeration value="PENDING" />
+      <xsd:enumeration value="ACTIVE" />
+      <xsd:enumeration value="WAITING" />
+      <xsd:enumeration value="QUEUE DOWN" />
+      <xsd:enumeration value="DATABASE DOWN" />
+      <xsd:enumeration value="FAILED" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="jobid">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[abcdef0123456789ABCDEF-]{32,38}" />
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="sequences">
+    <xsd:sequence>
+      <xsd:element maxOccurs="unbounded" name="entry">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="ident">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:pattern value=".*" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="seq">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:pattern value="[A-Za-z\n]+" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="fetchResult">
+    <xsd:sequence>
+      <xsd:element name="job">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="jobid" type="common:jobid" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="gff">
+    <xsd:sequence>
+      <xsd:element maxOccurs="unbounded" name="gff_record">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="seqname">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:pattern value=".*" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="source">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:pattern value=".*" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="feature">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:pattern value=".*" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="start" type="xsd:integer" />
+            <xsd:element name="end" type="xsd:integer" />
+            <xsd:element name="score" type="xsd:float" />
+            <xsd:element name="strand">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:enumeration value="+" />
+                  <xsd:enumeration value="-" />
+                  <xsd:enumeration value="." />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="frame">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:enumeration value="0" />
+                  <xsd:enumeration value="1" />
+                  <xsd:enumeration value="2" />
+                  <xsd:enumeration value="." />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="comment">
+              <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                  <xsd:pattern value=".*" />
+                </xsd:restriction>
+              </xsd:simpleType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

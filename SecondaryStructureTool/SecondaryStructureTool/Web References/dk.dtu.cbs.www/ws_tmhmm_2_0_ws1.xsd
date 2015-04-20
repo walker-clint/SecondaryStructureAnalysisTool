@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:tns="http://www.cbs.dtu.dk/ws/ws-tmhmm" xmlns:common="http://www.cbs.dtu.dk/ws/ws-common" xmlns:tmhmm="http://www.cbs.dtu.dk/ws/ws-tmhmm" elementFormDefault="unqualified" targetNamespace="http://www.cbs.dtu.dk/ws/ws-tmhmm" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:import schemaLocation="../common/ws_common_1_0b.xsd" namespace="http://www.cbs.dtu.dk/ws/ws-common" />
+  <xsd:complexType name="runService">
+    <xsd:sequence>
+      <xsd:element name="parameters">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="sequencedata" type="common:sequencedata" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="fetchResultResponse">
+    <xsd:sequence>
+      <xsd:element name="anndata" type="common:anndata" />
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>

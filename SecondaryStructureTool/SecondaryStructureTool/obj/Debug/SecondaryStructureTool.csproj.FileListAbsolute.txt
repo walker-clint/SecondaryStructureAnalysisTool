@@ -1,0 +1,14 @@
+c:\users\clinton\documents\visual studio 2013\Projects\SecondaryStructureTool\SecondaryStructureTool\bin\Debug\SecondaryStructureTool.exe.config
+c:\users\clinton\documents\visual studio 2013\Projects\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\MainWindow.baml
+c:\users\clinton\documents\visual studio 2013\Projects\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\MainWindow.g.cs
+c:\users\clinton\documents\visual studio 2013\Projects\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\App.g.cs
+c:\users\clinton\documents\visual studio 2013\Projects\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\SecondaryStructureTool_MarkupCompile.cache
+C:\Users\Clinton\Documents\Visual Studio 2013\Projects\SecondaryStructureTool\SecondaryStructureTool\bin\Debug\SecondaryStructureTool.exe
+C:\Users\Clinton\Documents\Visual Studio 2013\Projects\SecondaryStructureTool\SecondaryStructureTool\bin\Debug\SecondaryStructureTool.pdb
+C:\Users\Clinton\Documents\Visual Studio 2013\Projects\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\SecondaryStructureTool.g.resources
+C:\Users\Clinton\Documents\Visual Studio 2013\Projects\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\SecondaryStructureTool.Properties.Resources.resources
+C:\Users\Clinton\Documents\Visual Studio 2013\Projects\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\SecondaryStructureTool.csproj.GenerateResource.Cache
+C:\Users\Clinton\Documents\Visual Studio 2013\Projects\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\SecondaryStructureTool.exe
+C:\Users\Clinton\Documents\Visual Studio 2013\Projects\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\SecondaryStructureTool.pdb
+C:\Users\Clinton\Documents\Visual Studio 2013\Projects\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\SecondaryStructureTool_MarkupCompile.lref
+C:\Users\Clinton\documents\visual studio 2013\Projects\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\App.baml
