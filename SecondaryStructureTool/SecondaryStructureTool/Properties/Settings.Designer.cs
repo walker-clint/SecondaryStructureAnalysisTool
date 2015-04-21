@@ -32,5 +32,35 @@ namespace SecondaryStructureTool.Properties {
                 return ((string)(this["SecondaryStructureTool_dk_dtu_cbs_www_WSTMHMM_2_0_ws1"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://www.ebi.ac.uk/Tools/services/soap/emboss_pepstats")]
+        public string SecondaryStructureTool_uk_ac_ebi_www_JDispatcherService {
+            get {
+                return ((string)(this["SecondaryStructureTool_uk_ac_ebi_www_JDispatcherService"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://www.ebi.ac.uk/ws/services/WSDbfetchDoclit")]
+        public string SecondaryStructureTool_uk_ac_ebi_www1_WSDBFetchDoclitServerService {
+            get {
+                return ((string)(this["SecondaryStructureTool_uk_ac_ebi_www1_WSDBFetchDoclitServerService"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://www.ebi.ac.uk/ws/services/WSDbfetch")]
+        public string SecondaryStructureTool_uk_ac_ebi_www_fetch_WSDBFetchServerService {
+            get {
+                return ((string)(this["SecondaryStructureTool_uk_ac_ebi_www_fetch_WSDBFetchServerService"]));
+            }
+        }
     }
 }

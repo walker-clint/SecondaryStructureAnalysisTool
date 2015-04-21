@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 using System.ComponentModel;
 using System.IO;
+using SecondaryStructureTool.DataModel;
 
 namespace SecondaryStructureTool.DataModel
 {
@@ -70,6 +71,8 @@ namespace SecondaryStructureTool.DataModel
             set
             {
                 accessionNumber = value;
+                QueryNCBIDatabase Query = new QueryNCBIDatabase();
+                SequenceOrFASTAInput = Query.GetFASTA(accessionNumber);
                 NotifyPropertyChanged("AccessionNumber");
             }
         }

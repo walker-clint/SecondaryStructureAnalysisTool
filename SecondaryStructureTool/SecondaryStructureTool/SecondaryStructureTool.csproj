@@ -62,9 +62,25 @@
     </ApplicationDefinition>
     <Compile Include="DataModel\Chou_Fasman.cs" />
     <Compile Include="DataModel\HydropathyPlotter.cs" />
+    <Compile Include="DataModel\QueryNCBIDatabase.cs" />
     <Compile Include="DataModel\SetupData.cs" />
     <Compile Include="DataModel\TMHMM.cs" />
     <Compile Include="Web References\dk.dtu.cbs.www\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\uk.ac.ebi.www.fetch\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\uk.ac.ebi.www1\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\uk.ac.ebi.www\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
@@ -125,6 +141,36 @@
     <None Include="Web References\dk.dtu.cbs.www\ws_tmhmm_2_0_ws1.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Web References\uk.ac.ebi.www.fetch\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\uk.ac.ebi.www.fetch\WSDbfetch.wsdl" />
+    <None Include="Web References\uk.ac.ebi.www1\DatabaseInfo.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\uk.ac.ebi.www1\FormatInfo.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\uk.ac.ebi.www1\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\uk.ac.ebi.www1\StyleInfo.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\uk.ac.ebi.www1\WSDbfetchDoclit.wsdl" />
+    <None Include="Web References\uk.ac.ebi.www\emboss_pepstats.wsdl" />
+    <None Include="Web References\uk.ac.ebi.www\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\uk.ac.ebi.www\wsParameterDetails.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\uk.ac.ebi.www\wsResultType.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -146,6 +192,39 @@
       </CachedDynamicPropName>
       <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
       <CachedSettingsPropName>SecondaryStructureTool_dk_dtu_cbs_www_WSTMHMM_2_0_ws1</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://www.ebi.ac.uk/Tools/services/soap/emboss_pepstats%3fwsdl">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\uk.ac.ebi.www\</RelPath>
+      <UpdateFromURL>http://www.ebi.ac.uk/Tools/services/soap/emboss_pepstats%3fwsdl</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>SecondaryStructureTool_uk_ac_ebi_www_JDispatcherService</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://www.ebi.ac.uk/ws/services/WSDbfetch%3fwsdl">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\uk.ac.ebi.www.fetch\</RelPath>
+      <UpdateFromURL>http://www.ebi.ac.uk/ws/services/WSDbfetch%3fwsdl</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>SecondaryStructureTool_uk_ac_ebi_www_fetch_WSDBFetchServerService</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://www.ebi.ac.uk/ws/services/WSDbfetchDoclit%3fwsdl">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\uk.ac.ebi.www1\</RelPath>
+      <UpdateFromURL>http://www.ebi.ac.uk/ws/services/WSDbfetchDoclit%3fwsdl</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>SecondaryStructureTool_uk_ac_ebi_www1_WSDBFetchDoclitServerService</CachedSettingsPropName>
     </WebReferenceUrl>
   </ItemGroup>
   <ItemGroup>
