@@ -289,20 +289,33 @@ namespace SecondaryStructureTool.DataModel
 
 
 
-
+                BadSequence = false;
+                string seqString = "";
                 for (var i = sequenceStart; i < tokens.Length; ++i)
                 {
-                    if (tokens[i] == "")
+                    foreach (char c in tokens[i])
                     {
+                        if (!AA.Contains(c))
+                        {
+                            badSequenceLocations.Add(sequence.IndexOf(c));
+                            BadSequence = true;
+                        }
+                    }
+                    if (!BadSequence)
+                    {
+                        if (tokens[i] == "")
+                        {
 
+                        }
+                        else
+                        {
+                            seqString += tokens[i];
+                        }
                     }
-                    else
-                    {
-                        Sequence += tokens[i];
-                    }
+
 
                 }
-                
+                Sequence = seqString;
 
             } else {
                 Sequence = FASTA;
