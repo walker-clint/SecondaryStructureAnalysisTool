@@ -14,6 +14,8 @@ namespace SecondaryStructureTool.DataModel
     {
 
         #region Private Variables
+        private bool setupFromAccession = false;
+        private bool setupFromFASTAorSeq = false;
         private string sequence;
         private string sequenceOrFASTAInput;
         private string accessionNumber;
@@ -23,6 +25,11 @@ namespace SecondaryStructureTool.DataModel
         private char[] AA = { 'I', 'V', 'L', 'F', 'C', 'M', 'A', 'G', 'T', 'W', 'S', 'Y', 'P', 'H', 'E', 'Q', 'D', 'N', 'K', 'R' };
         private bool badSequence;
         private List<int> badSequenceLocations = new List<int>();
+
+        enum FASTASeqID
+        {
+            gi, emb, djb, pir, prf, sp, pdb, pat, bbs, gnl, Ref, lcl 
+        }
         #endregion
 
         #region Public Variables
@@ -34,7 +41,6 @@ namespace SecondaryStructureTool.DataModel
                 BadSequence = false;
                 foreach (char c in sequence)
                 {
-                    
                     if (!AA.Contains(c))
                     {
                         badSequenceLocations.Add(sequence.IndexOf(c));
@@ -59,8 +65,19 @@ namespace SecondaryStructureTool.DataModel
             get { return sequenceOrFASTAInput; }
             set
             {
-                sequenceOrFASTAInput = value;
-                DecomposeFASTA(value);
+                if (setupFromAccession)
+                {
+                    sequenceOrFASTAInput = value;
+                }
+                else
+                {
+                    setupFromFASTAorSeq = true;
+                    setupFromAccession = false;
+                    sequenceOrFASTAInput = value;
+                    DecomposeFASTA(value);
+                    setupFromFASTAorSeq = false;
+                }
+                
                 NotifyPropertyChanged("SequenceOrFASTAInput");
             }
         }
@@ -70,9 +87,21 @@ namespace SecondaryStructureTool.DataModel
             get { return accessionNumber; }
             set
             {
-                accessionNumber = value;
-                QueryNCBIDatabase Query = new QueryNCBIDatabase();
-                SequenceOrFASTAInput = Query.GetFASTA(accessionNumber);
+                if (setupFromFASTAorSeq)
+                {
+                    //accession number being set from input FASTA
+                    accessionNumber = value;
+                }
+                else
+                {
+                    setupFromAccession = true;
+                    setupFromFASTAorSeq = false;
+                    accessionNumber = value;
+                    QueryNCBIDatabase Query = new QueryNCBIDatabase();
+                    SequenceOrFASTAInput = Query.GetFASTA(accessionNumber);
+                    DecomposeFASTA(SequenceOrFASTAInput);
+                    setupFromAccession = false;
+                }   
                 NotifyPropertyChanged("AccessionNumber");
             }
         }
@@ -131,33 +160,153 @@ namespace SecondaryStructureTool.DataModel
         private void DecomposeFASTA(string FASTA)
         {
             bool seqStart = false, nameStart = false;
+            int sequenceStart = 1;
             //Rip the name, description and sequence from FASTA entry
             if (FASTA[0] == '>')
             {
-                int holder = 1;
-                char[] delimiterChars = {'|', '\n', '\r' };
-                string[] tokens = FASTA.Split(delimiterChars);
-                foreach (string s in tokens){
-                    System.Console.WriteLine(s);
-                    AccessionNumber = tokens[3];
-                    Name = tokens[4];
-                    for (var i = 5; i < tokens.Length; ++i)
+                int holder = 1, pipes = 0;
+                foreach (char c in FASTA)
+                {
+                    if (c == '|')
                     {
-                        if (tokens[i] == "")
-                        {
-                            
-                        }
-                        else
-                        {
-                            Sequence += tokens[i];
-                        }
-                       
+                        ++pipes;
                     }
+
                 }
+                
+                //'|',
+                char[] delimiterChars = { '\n', '\r' };
+                string[] tokens = FASTA.Split(delimiterChars);
+                bool decoding = true;
+                foreach (string s in tokens){
+                    if (!decoding)
+                    {
+                        break;
+                    } 
+                    System.Console.WriteLine(s);
+                    int j = 0;
+                    string[] databases = { "gi", "emb", "djb", "pir", "prf", "sp", "pdb", "pat", "bbs", "gnl", "ref", "lcl" };
+                    
+                    foreach (string d in databases)
+                    {
+                        if (!decoding)
+                        {
+                            break;
+                        } 
+                        else if (tokens[0].Contains(d))
+                        {
+                            string db = d;
+                            int index = Array.IndexOf(databases, d);
+                            
+                            while (decoding) {
+                                switch (index)
+                                {
+                                    case 0:
+                                        //GenBank                           gb|accession|locus
+                                        if (tokens[2] == "sp")
+                                        {
+                                            AccessionNumber = tokens[1];
+                                            index = Array.IndexOf(databases, "sp");
+                                            break;
+                                        }
+                                        decoding = false;
+                                        break;
+
+                                    case 1:
+                                        //EMBL Data Library                 emb|accession|locus
+                                        break;
+                                    case 2:
+                                        //DDBJ, DNA Database of Japan       dbj|accession|locus
+                                        //not in amino acid format?
+                                        break;
+                                    case 3:
+                                        //NBRF PIR                          pir||entry
+                                        break;
+                                    case 4:
+                                        //Protein Research Foundation       prf||name
+                                        break;
+                                    case 5:
+                                        //SWISS-PROT                        sp|accession|entry name
+                                        if (pipes == 2)
+                                        {
+                                            string[] tokens2 = tokens[0].Split('|');
+                                            if (tokens2.Length >= 3)
+                                            {
+                                                if (setupFromFASTAorSeq)
+                                                {
+                                                    AccessionNumber = tokens2[1];
+                                                }
+                                                Name = tokens2[2];
+                                                decoding = false;
+                                                break;
+                                            }
+                                            else if (tokens2.Length == 2)
+                                            {
+                                                AccessionNumber = tokens[1];
+                                                decoding = false;
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                // no accession number or name
+                                                decoding = false;
+                                                break;
+                                            }
+                                        }
+                                        break;
+                                    case 6:
+                                        //Brookhaven Protein Data Bank      pdb|entry|chain
+                                        break;
+                                    case 7:
+                                        //Patents                           pat|country|number
+                                        break;
+                                    case 8:
+                                        //GenInfo Backbone Id               bbs|number
+                                        break;
+                                    case 9:
+                                        //GenInfo Backbone Id               bbs|number
+                                        break;
+                                    case 10:
+                                        //General database identifier       gnl|database|identifier
+                                        break;
+                                    case 11:
+                                        //NCBI Reference Sequence           ref|accession|locus
+                                        break;
+                                    case 12:
+                                        //Local Sequence identifier         lcl|identifier
+                                        break;
+                                    default:
+                                        break;
+
+                                }
+                            }
+                        }
+                    }
+
+
+                }
+
+
+
+
+
+                for (var i = sequenceStart; i < tokens.Length; ++i)
+                {
+                    if (tokens[i] == "")
+                    {
+
+                    }
+                    else
+                    {
+                        Sequence += tokens[i];
+                    }
+
+                }
+                
 
             } else {
                 Sequence = FASTA;
-
+               
             }
 
 

@@ -39,7 +39,7 @@ namespace SecondaryStructureTool.DataModel
             }
             catch (Exception e)
             {
-                string problem = e.ToString();
+                string problem = "There was a Problem with your request. Please check that  your accession number is correct and that the record is on the UNIprotKB database.";
                 return problem;
             }
             

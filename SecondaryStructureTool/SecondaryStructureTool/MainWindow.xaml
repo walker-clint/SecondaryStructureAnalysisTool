@@ -47,7 +47,7 @@
 						<TextBlock Text="Ver: 1.0" FontSize="8" Margin="168.065,0,0,6.36" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
 
 					</Grid>
-					<Grid x:Name="Setup" Height="567" Canvas.Left="205" Width="288.858" HorizontalAlignment="Left" RenderTransformOrigin="0.5,0.5">
+					<Grid x:Name="Setup" Height="567" Canvas.Left="205" Width="288.858" HorizontalAlignment="Left" RenderTransformOrigin="0.5,0.5" DataContext="" >
 						<Grid.RowDefinitions>
 							<RowDefinition Height="226*"/>
 							<RowDefinition Height="341*"/>
