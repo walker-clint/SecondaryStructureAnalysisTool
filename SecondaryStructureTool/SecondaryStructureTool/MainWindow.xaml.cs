@@ -26,6 +26,7 @@ namespace SecondaryStructureTool
         private SetupData setupData;
         private HydropathyPlotter hydroPlotter;
         private double height, width;
+        
         public MainWindow()
         {
             InitializeComponent();
@@ -35,6 +36,11 @@ namespace SecondaryStructureTool
             hydroPlotter = new HydropathyPlotter();
             height = PrimaryWindow.ActualHeight;
             width = PrimaryWindow.ActualWidth;
+            setupData.GetDataBases();
+            foreach (string db in setupData.Databases)
+            {
+                DataBaseDropdown.Items.Add(db);
+            }
         }
 
 

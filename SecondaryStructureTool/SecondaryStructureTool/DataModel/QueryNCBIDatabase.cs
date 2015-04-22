@@ -44,6 +44,22 @@ namespace SecondaryStructureTool.DataModel
             }
             
         }
+
+        public string[] GetDatabases()
+        {
+            string[] result = null;
+            WSDBFetchServerService fetch = new WSDBFetchServerService();
+            try
+            {
+                result = fetch.getSupportedDBs();
+                return result;
+            }
+            catch (Exception e)
+            {
+                result = null;
+            }
+            return result;
+        }
         #endregion
 
     }

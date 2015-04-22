@@ -83,6 +83,7 @@
 						<CheckBox x:Name="BadSequenceData" Content="" IsChecked="{Binding BadSequence}" Checked="BadSequenceData_Checked" Unchecked="BadSequenceData_Checked" HorizontalAlignment="Left" Margin="-104.506,191.094,0,0" Grid.Row="1" VerticalAlignment="Top" Visibility="Hidden">
 							
 						</CheckBox>
+						<Label Content="Choose Database" HorizontalAlignment="Left" Margin="-109.53,142.43,0,0" VerticalAlignment="Top" Height="20" Width="79" FontSize="8"/>
 					</Grid>
 
 
@@ -142,6 +143,16 @@
                     </ScrollViewer>
                         
 					</Grid>
+					<ComboBox x:Name="DataBaseDropdown" Canvas.Left="101.736" Canvas.Top="161.164" Width="96.181" >
+						<ComboBox.Background>
+							<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+								<GradientStop Color="#FFF0F0F0" Offset="0"/>
+								<GradientStop Color="#FFDEDEDE" Offset="1"/>
+							</LinearGradientBrush>
+						</ComboBox.Background>
+						
+
+					</ComboBox>
 
 				</Canvas>
 			</Viewbox>

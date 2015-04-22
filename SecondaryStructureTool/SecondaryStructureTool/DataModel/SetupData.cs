@@ -25,11 +25,13 @@ namespace SecondaryStructureTool.DataModel
         private char[] AA = { 'I', 'V', 'L', 'F', 'C', 'M', 'A', 'G', 'T', 'W', 'S', 'Y', 'P', 'H', 'E', 'Q', 'D', 'N', 'K', 'R' };
         private bool badSequence;
         private List<int> badSequenceLocations = new List<int>();
-
+        private string[] databases;
         enum FASTASeqID
         {
             gi, emb, djb, pir, prf, sp, pdb, pat, bbs, gnl, Ref, lcl 
         }
+
+        QueryNCBIDatabase Query = new QueryNCBIDatabase();
         #endregion
 
         #region Public Variables
@@ -97,12 +99,21 @@ namespace SecondaryStructureTool.DataModel
                     setupFromAccession = true;
                     setupFromFASTAorSeq = false;
                     accessionNumber = value;
-                    QueryNCBIDatabase Query = new QueryNCBIDatabase();
                     SequenceOrFASTAInput = Query.GetFASTA(accessionNumber);
                     DecomposeFASTA(SequenceOrFASTAInput);
                     setupFromAccession = false;
                 }   
                 NotifyPropertyChanged("AccessionNumber");
+            }
+        }
+
+        public string[] Databases
+        {
+            get { return databases; }
+            set
+            {
+                databases = value;
+                NotifyPropertyChanged("Databases");
             }
         }
         public string JobID
@@ -146,7 +157,9 @@ namespace SecondaryStructureTool.DataModel
         }
 
         #region Public Methods
-        
+        public void GetDataBases(){
+            databases = Query.GetDatabases();
+        }
 
         #endregion
 
