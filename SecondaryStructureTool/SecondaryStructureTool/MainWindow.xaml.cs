@@ -36,7 +36,14 @@ namespace SecondaryStructureTool
             hydroPlotter = new HydropathyPlotter();
             height = PrimaryWindow.ActualHeight;
             width = PrimaryWindow.ActualWidth;
-            setupData.GetDataBases();
+            try
+            {
+                setupData.GetDataBases();
+            }
+            catch (Exception e)
+            {
+                //check to see if there is an internet connection and display error
+            }
             foreach (string db in setupData.Databases)
             {
                 DataBaseDropdown.Items.Add(db);
@@ -134,13 +141,12 @@ namespace SecondaryStructureTool
                 DataGrid.Children.Add(seq[i]);
             }
             
-            for (var i = 0; i < seqLength; ++i)
-            {
-                string hydroName = "hydroPlot_" + i;
+            //for (var i = 0; i < seqLength; ++i)
+            //{
+            //    string hydroName = "hydroPlot_" + i;
+            //}
 
-            }
-
-            DrawHydropathyPlot();
+            
             
         }
 
@@ -159,12 +165,14 @@ namespace SecondaryStructureTool
                 DataManipulationGrid.Visibility = System.Windows.Visibility.Visible;
 
                 //start hydropathy plot method
-
                 hydroPlotter.InitHydroPlotter(setupData.Sequence);
                 //start chou-fasman method
+
                 //get TMHMM data
+
                 //run create Grid
                 CreateGrid();
+                DrawHydropathyPlot();
             }
         }
 

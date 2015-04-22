@@ -49,3 +49,7 @@ SecondaryStructureTool/SecondaryStructureTool/obj/Debug/DesignTimeResolveAssembl
 *.cache
 *.lref
 *.suo
+*.suo
+*.exe
+*.pdb
+*.cache
