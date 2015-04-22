@@ -44,3 +44,7 @@ Temporary Items
 *.suo
 *.suo
 *.suo
+*.exe
+SecondaryStructureTool/SecondaryStructureTool/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+*.cache
+*.lref
