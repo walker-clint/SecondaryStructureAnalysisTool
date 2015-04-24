@@ -160,6 +160,7 @@
                     </ScrollViewer>
                         
 					</Grid>
+					<TextBlock Text="testme" Canvas.Left="345.393" TextWrapping="Wrap"  Canvas.Top="502.893" Foreground="#FFF01313" IsManipulationEnabled="True" />
 
 				</Canvas>
 			</Viewbox>
