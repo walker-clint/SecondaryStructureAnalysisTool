@@ -83,6 +83,16 @@
 						<CheckBox x:Name="BadSequenceData" Content="" IsChecked="{Binding BadSequence}" Checked="BadSequenceData_Checked" Unchecked="BadSequenceData_Checked" HorizontalAlignment="Left" Margin="-104.506,191.094,0,0" Grid.Row="1" VerticalAlignment="Top" Visibility="Hidden">
 							
 						</CheckBox>
+						<ComboBox x:Name="DataBaseDropdown" Margin="-104.506,162.43,297.183,41.61" >
+							<ComboBox.Background>
+								<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+									<GradientStop Color="#FFF0F0F0" Offset="0"/>
+									<GradientStop Color="#FFDEDEDE" Offset="1"/>
+								</LinearGradientBrush>
+							</ComboBox.Background>
+						
+
+						</ComboBox>
 						<Label Content="Choose Database" HorizontalAlignment="Left" Margin="-109.53,142.43,0,0" VerticalAlignment="Top" Height="20" Width="79" FontSize="8"/>
 					</Grid>
 
@@ -120,15 +130,22 @@
                     				<ColumnDefinition Width="51*"/>
                     			</Grid.ColumnDefinitions>
                     			<Label Content="Type" HorizontalAlignment="Left" Margin="5.083,0,0,0"/>
-                    			<Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="77.303" Margin="0,19.85,0,0" VerticalAlignment="Top" Width="218.275" CornerRadius="10" Grid.ColumnSpan="2"/>
+                    			<Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="97.146" Margin="0,19.85,0,0" VerticalAlignment="Top" Width="218.275" CornerRadius="10" Grid.ColumnSpan="2"/>
                     			<RadioButton x:Name="TransMembrane" Content="TransMembrane (Window Size 19)" HorizontalAlignment="Left" Margin="8.035,25.859,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Checked="TransMembraneOnly_Checked"/>
                     			<RadioButton x:Name="SurfaceRegion" Content="Surface Region (Window Size 9)" HorizontalAlignment="Left" Margin="8.035,40.819,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Checked="SurfaceRegionOnly_Checked"/>
                     			<RadioButton x:Name="SurfaceRegion_TransMembrane" Content="Both Transmembrane and Surface" HorizontalAlignment="Left" Margin="8.035,55.779,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Checked="TransMemAndSurface_Checked"/>
-                    			<RadioButton x:Name="AnotherOption" Content="set custom window size" HorizontalAlignment="Left" Margin="8.035,70.739,0,0" VerticalAlignment="Top"/>
+                    			<RadioButton x:Name="CustomWindow" Content="Custom Window" HorizontalAlignment="Left" Margin="8.035,70.739,0,0" VerticalAlignment="Top" Checked="CustomWindow_Checked"/>
+                    			<RadioButton x:Name="ShowAllHydroPlots" Content="Show All" HorizontalAlignment="Left" Margin="8.035,85.699,0,0" VerticalAlignment="Top" Checked="ShowAllHydroPlots_Checked"/>
+                    			<RadioButton x:Name="HideAllHydroPlots" Content="Hide All" HorizontalAlignment="Left" Margin="8.035,99.96,0,0" VerticalAlignment="Top" Checked="HideAllHydroPlots_Checked"/>
                     		</Grid>
-                    		<Grid x:Name="HydroWindowSize" Margin="108.76,172.454,20.348,10">
-                    			<Label Content="Window Size"/>
-                    			<TextBox x:Name="HydropathyWindowSize" HorizontalAlignment="Left" Height="20.665" Margin="77.083,3.091,0,0" TextWrapping="Wrap" Text="19" VerticalAlignment="Top" Width="28.146"/>
+                    		<Grid x:Name="HydroWindowSize" Margin="133.115,45.782,14.052,277.933">
+                    			<Grid.ColumnDefinitions>
+                    				<ColumnDefinition Width="67*"/>
+                    				<ColumnDefinition Width="51*"/>
+                    			</Grid.ColumnDefinitions>
+                    			<Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="41.368" Margin="-3.226,-6.011,0,-5.362" VerticalAlignment="Top" Width="110.584" CornerRadius="10" Grid.ColumnSpan="2"/>
+                    			<TextBlock Margin="0,-2.289,35.693,-3.324" TextWrapping="Wrap" Grid.ColumnSpan="2"><Run Text="Custom "/><LineBreak/><Run Text="Window Size"/></TextBlock>
+                    			<TextBox x:Name="HydropathyWindowSize" HorizontalAlignment="Left" Height="20.665" Margin="61.79,4.769,-3.878,0" TextWrapping="Wrap" Text="19" VerticalAlignment="Top" Width="28.146" Grid.Column="1"/>
                     		</Grid>
                     	</Grid>
                     </Grid>
@@ -143,16 +160,6 @@
                     </ScrollViewer>
                         
 					</Grid>
-					<ComboBox x:Name="DataBaseDropdown" Canvas.Left="101.736" Canvas.Top="161.164" Width="96.181" >
-						<ComboBox.Background>
-							<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-								<GradientStop Color="#FFF0F0F0" Offset="0"/>
-								<GradientStop Color="#FFDEDEDE" Offset="1"/>
-							</LinearGradientBrush>
-						</ComboBox.Background>
-						
-
-					</ComboBox>
 
 				</Canvas>
 			</Viewbox>

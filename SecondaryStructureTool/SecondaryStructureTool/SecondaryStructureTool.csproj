@@ -61,6 +61,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DataModel\Chou_Fasman.cs" />
+    <Compile Include="DataModel\GenIterator.cs" />
     <Compile Include="DataModel\HydropathyPlotter.cs" />
     <Compile Include="DataModel\QueryNCBIDatabase.cs" />
     <Compile Include="DataModel\SetupData.cs" />

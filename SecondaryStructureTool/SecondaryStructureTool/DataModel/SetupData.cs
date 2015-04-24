@@ -16,6 +16,8 @@ namespace SecondaryStructureTool.DataModel
         #region Private Variables
         private bool setupFromAccession = false;
         private bool setupFromFASTAorSeq = false;
+        private bool badHydroWindowSize = false;
+        private int hydroWindowSize;
         private string sequence;
         private string sequenceOrFASTAInput;
         private string accessionNumber;
@@ -26,6 +28,9 @@ namespace SecondaryStructureTool.DataModel
         private bool badSequence;
         private List<int> badSequenceLocations = new List<int>();
         private string[] databases;
+        private float[] runData;
+
+        
         enum FASTASeqID
         {
             gi, emb, djb, pir, prf, sp, pdb, pat, bbs, gnl, Ref, lcl 
@@ -35,6 +40,41 @@ namespace SecondaryStructureTool.DataModel
         #endregion
 
         #region Public Variables
+        public int HydroWindowSize
+        {
+            get { return hydroWindowSize; }
+            set
+            {
+                if (value < 3 || value > sequence.Length / 4)
+                {
+                    hydroWindowSize = 19;
+                }
+                else
+                {
+                    hydroWindowSize = value;
+                }
+                NotifyPropertyChanged("HydroWindowSize");
+            }
+        }
+
+        public bool BadHydroWindowSize
+        {
+            get { return badHydroWindowSize; }
+            set
+            {
+                badHydroWindowSize = value;
+                NotifyPropertyChanged("BadHydroWindowSize");
+            }
+        }
+        public float[] Rundata
+        {
+            get { return runData; }
+            set
+            {
+                runData = value;
+                NotifyPropertyChanged("Rundata");
+            }
+        }
         public string Sequence
         {
             get { return sequence; }

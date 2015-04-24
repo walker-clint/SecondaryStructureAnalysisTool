@@ -32,9 +32,33 @@ namespace SecondaryStructureTool.DataModel
         private float[] sequenceHoppWoodsScores;
         private float[] sequenceKDTransMembrane;  //window size 19
         private float[] sequenceKDSurfaceRegions; //window size 9
+        private float[] sequenceHWTransMembrane;  //window size 19
+        private float[] sequenceHWSurfaceRegions; //window size 9
+        private float[] sequenceCustomWindowKD;  //Custom window 
+        private float[] sequenceCustomWindowHW;  //Custom window 
         #endregion
 
         #region Public Properties
+
+        public float[] SequenceCustomWindowKD
+        {
+            get { return sequenceCustomWindowKD; }
+            set
+            {
+                sequenceCustomWindowKD = value;
+                NotifyPropertyChanged("SequenceCustomWindowKD");
+            }
+        }
+
+        public float[] SequenceCustomWindowHW
+        {
+            get { return sequenceCustomWindowHW; }
+            set
+            {
+                sequenceCustomWindowHW = value;
+                NotifyPropertyChanged("SequenceCustomWindowHW");
+            }
+        }
 
         public float[] SequenceKDTransMembrane
         {
@@ -53,6 +77,26 @@ namespace SecondaryStructureTool.DataModel
             {
                 sequenceKDSurfaceRegions = value;
                 NotifyPropertyChanged("SequenceKDSurfaceRegions");
+            }
+        }
+
+        public float[] SequenceHWTransMembrane
+        {
+            get { return sequenceHWTransMembrane; }
+            set
+            {
+                sequenceHWTransMembrane = value;
+                NotifyPropertyChanged("SequenceHWTransMembrane");
+            }
+        }
+
+        public float[] SequenceHWSurfaceRegions
+        {
+            get { return sequenceHWSurfaceRegions; }
+            set
+            {
+                sequenceHWSurfaceRegions = value;
+                NotifyPropertyChanged("SequenceHWSurfaceRegions");
             }
         }
         public float[] SequenceKyteDoolittleScores
@@ -78,9 +122,8 @@ namespace SecondaryStructureTool.DataModel
 
         public HydropathyPlotter()
         {
-            
-        }
 
+        }
 
         #region Public Methods
 
@@ -91,43 +134,67 @@ namespace SecondaryStructureTool.DataModel
             //sequenceHoppWoodsScores = new float[sequence.Length];
             sequenceKDTransMembrane = new float[sequence.Length];
             sequenceKDSurfaceRegions = new float[sequence.Length];
+            SequenceHWSurfaceRegions = new float[sequence.Length];
+            SequenceHWTransMembrane = new float[sequence.Length];
             kyteDoolittleScale = new Dictionary<char, float>();
             PopulateScales();
             SetValues();
-            RunKyteDoolittle();
+            RunTransMembraneAndSurface();
+            
         }
 
-        public void RunKyteDoolittle()
+        public void RunTransMembraneAndSurface()
         {
             int transMem = 19;
             int surf = 9;
+            
+            SequenceHWSurfaceRegions[0] = 5;
+            SequenceHWTransMembrane[0] = 10;
+            SequenceKDSurfaceRegions[0] = 5;
+            SequenceKDTransMembrane[0] = 10;
+            SequenceHWSurfaceRegions[sequence.Length-1] = sequence.Length - 5;
+            SequenceHWTransMembrane[sequence.Length-1] = sequence.Length - 9;
+            SequenceKDSurfaceRegions[sequence.Length-1] = sequence.Length - 5;
+            SequenceKDTransMembrane[sequence.Length-1] = sequence.Length - 9;
+          
 
-            for (var i = 0; i < sequence.Length; i++)
+
+            for (var i = 5; i < sequence.Length - 5; i++)
             {
                 //check to see if 19 AA are left in sequence from i
-                int index = i, index2 = i;
-                if (i+19 < sequence.Length){
-                    sequenceKDTransMembrane[i] = sequenceKyteDoolittleScores[index] + sequenceKyteDoolittleScores[++index]
-                        + sequenceKyteDoolittleScores[++index] + sequenceKyteDoolittleScores[++index] + sequenceKyteDoolittleScores[++index]
-                        + sequenceKyteDoolittleScores[++index] + sequenceKyteDoolittleScores[++index] + sequenceKyteDoolittleScores[++index]
-                        + sequenceKyteDoolittleScores[++index] + sequenceKyteDoolittleScores[++index] + sequenceKyteDoolittleScores[++index]
-                        + sequenceKyteDoolittleScores[++index] + sequenceKyteDoolittleScores[++index] + sequenceKyteDoolittleScores[++index]
-                        + sequenceKyteDoolittleScores[++index] + sequenceKyteDoolittleScores[++index] + sequenceKyteDoolittleScores[++index]
-                        + sequenceKyteDoolittleScores[++index] + sequenceKyteDoolittleScores[++index];
-                    sequenceKDSurfaceRegions[i] = sequenceKyteDoolittleScores[index2] + sequenceKyteDoolittleScores[++index2]
-                        + sequenceKyteDoolittleScores[++index2] + sequenceKyteDoolittleScores[++index2] + sequenceKyteDoolittleScores[++index2]
-                        + sequenceKyteDoolittleScores[++index2] + sequenceKyteDoolittleScores[++index2] + sequenceKyteDoolittleScores[++index2]
-                        + sequenceKyteDoolittleScores[++index2];
+
+                int index = i, index2 = i, transStop = sequence.Length -9, surfStop = sequence.Length -5;
+                if (i < transStop && i > 9){
+                    sequenceKDTransMembrane[i] = sequenceKyteDoolittleScores[index - 9] + sequenceKyteDoolittleScores[index - 8]
+                        + sequenceKyteDoolittleScores[index - 7] + sequenceKyteDoolittleScores[index - 6] + sequenceKyteDoolittleScores[index - 5]
+                        + sequenceKyteDoolittleScores[index - 4] + sequenceKyteDoolittleScores[index - 3] + sequenceKyteDoolittleScores[index - 2]
+                        + sequenceKyteDoolittleScores[index - 1] + sequenceKyteDoolittleScores[index] + sequenceKyteDoolittleScores[index + 1]
+                        + sequenceKyteDoolittleScores[index + 2] + sequenceKyteDoolittleScores[index + 3] + sequenceKyteDoolittleScores[index + 4]
+                        + sequenceKyteDoolittleScores[index + 5] + sequenceKyteDoolittleScores[index + 6] + sequenceKyteDoolittleScores[index + 7]
+                        + sequenceKyteDoolittleScores[index + 8] + sequenceKyteDoolittleScores[index + 9];
+                    sequenceKDSurfaceRegions[i] = sequenceKyteDoolittleScores[index2 - 4] + sequenceKyteDoolittleScores[index2 - 3]
+                        + sequenceKyteDoolittleScores[index2 - 2] + sequenceKyteDoolittleScores[index2 - 1] + sequenceKyteDoolittleScores[index2]
+                        + sequenceKyteDoolittleScores[index2 + 1] + sequenceKyteDoolittleScores[index2 + 2] + sequenceKyteDoolittleScores[index2 + 3]
+                        + sequenceKyteDoolittleScores[index2 + 4];
                 }
-                else if (i+9 < sequence.Length)
+                else if (i < surfStop)
                 {
-                    sequenceKDSurfaceRegions[i] = sequenceKyteDoolittleScores[index2] + sequenceKyteDoolittleScores[++index2]
-                         + sequenceKyteDoolittleScores[++index2] + sequenceKyteDoolittleScores[++index2] + sequenceKyteDoolittleScores[++index2]
-                         + sequenceKyteDoolittleScores[++index2] + sequenceKyteDoolittleScores[++index2] + sequenceKyteDoolittleScores[++index2]
-                         + sequenceKyteDoolittleScores[++index2];
+                    sequenceKDSurfaceRegions[i] = sequenceKyteDoolittleScores[index2 - 4] + sequenceKyteDoolittleScores[index2 - 3]
+                        + sequenceKyteDoolittleScores[index2 - 2] + sequenceKyteDoolittleScores[index2 - 1] + sequenceKyteDoolittleScores[index2]
+                        + sequenceKyteDoolittleScores[index2 + 1] + sequenceKyteDoolittleScores[index2 + 2] + sequenceKyteDoolittleScores[index2 + 3]
+                        + sequenceKyteDoolittleScores[index2 + 4];
+                }
+                else
+                {
+                    break;
                 }
             }
             
+
+        }
+
+        public void RunCustomWindow(int windowSize)
+        {
 
         }
         #endregion

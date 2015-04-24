@@ -56,7 +56,7 @@ namespace SecondaryStructureTool.DataModel
             }
             catch (Exception e)
             {
-                result = null;
+                result[0] = "NO DATABASES FOUND";
             }
             return result;
         }
