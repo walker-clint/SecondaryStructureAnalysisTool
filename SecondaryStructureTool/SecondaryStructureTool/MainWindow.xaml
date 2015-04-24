@@ -153,7 +153,7 @@
 						
                     	<Grid x:Name="DataGridWrapper" Height="654.818" Width="Auto">
 						    <Grid x:Name="GraphGrid" Margin="10,0,0,0" HorizontalAlignment="Left"/>
-                    		<Grid x:Name="DataGrid" Height="100" Width="1907" Margin="10,285.04,-30,269.777" HorizontalAlignment="Left"/>
+                    		<Grid x:Name="DataGrid" Height="100" Width="1907" Margin="10,541.54,-30,13.277" HorizontalAlignment="Left"/>
                         
                     	</Grid>
                         
