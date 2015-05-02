@@ -18,15 +18,27 @@ using SecondaryStructureTool.DataModel;
 
 namespace SecondaryStructureTool
 {
+    
+
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region Private Variables
+        private Button selectedResidueButton;
         private SetupData setupData;
         private HydropathyPlotter hydroPlotter;
         private double height, width;
-        
+        private bool CustomWindowActive = false;
+        private int ScaleFactor = 5;
+        private int transMem = 19;
+        private int surfMem = 9;
+        #endregion
+
+        #region Constructor
+
         public MainWindow()
         {
             InitializeComponent();
@@ -36,6 +48,7 @@ namespace SecondaryStructureTool
             hydroPlotter = new HydropathyPlotter();
             height = PrimaryWindow.ActualHeight;
             width = PrimaryWindow.ActualWidth;
+            selectedResidueButton = new Button();
             try
             {
                 setupData.GetDataBases();
@@ -48,16 +61,20 @@ namespace SecondaryStructureTool
             {
                 DataBaseDropdown.Items.Add(db);
             }
-        }
+        } 
+        #endregion
 
+        #region Public Methods
 
-        public void CreateGrid(){
+        public void CreateGrid()
+        {
             int seqLength = setupData.Sequence.Length;
             ClearGrid();
             int gridWidth = seqLength * 25;
             DataGridWrapper.Width = gridWidth;
             DataGrid.Width = gridWidth;
             GraphGrid.Width = gridWidth;
+            ChouFasmanGrid.Width = gridWidth;
             #region GraphZeroLine
             Polyline GraphZeroLine = new Polyline();
             GraphZeroLine.StrokeThickness = 4;
@@ -102,55 +119,79 @@ namespace SecondaryStructureTool
                     columns[i].Width = new GridLength(20, GridUnitType.Pixel);
                 }
                 DataGrid.ColumnDefinitions.Add(columns[i]);
+                ChouFasmanGrid.ColumnDefinitions.Add(columns[i]);
             }
 
-            RowDefinition[] rows = new RowDefinition[1];
-            for (int i = 0; i < rows.Length; ++i )
+            RowDefinition[] rows = new RowDefinition[3];
+            for (int i = 0; i < rows.Length; ++i)
             {
                 rows[i] = new RowDefinition();
             }
             rows[0].Height = new GridLength(20, GridUnitType.Pixel);
-            //rows[1].Height = new GridLength(20, GridUnitType.Pixel);
-            foreach (RowDefinition r in rows){
+            rows[1].Height = new GridLength(20, GridUnitType.Pixel);
+            rows[2].Height = new GridLength(20, GridUnitType.Pixel);
+            foreach (RowDefinition r in rows)
+            {
                 DataGrid.RowDefinitions.Add(r);
+                ChouFasmanGrid.RowDefinitions.Add(r);
             }
             //DataGrid.ShowGridLines = true;
-            TextBlock[] seq = new TextBlock[seqLength];
+            Button[] seq = new Button[seqLength];
+            TextBlock[] indexNumbers = new TextBlock[seqLength];
             for (int i = 0; i < seq.Length; ++i)
             {
-                seq[i] = new TextBlock();
+                seq[i] = new Button();
+                indexNumbers[i] = new TextBlock();
             }
-            
+
             for (var i = 0; i < seqLength; ++i)
             {
                 string blockNum = "tBlock_" + i;
-                seq[i].Text = setupData.Sequence[i] + "";
+                seq[i].Content = setupData.Sequence[i] + "";
                 seq[i].Width = 20;
                 seq[i].Height = 20;
                 seq[i].HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
                 seq[i].VerticalAlignment = System.Windows.VerticalAlignment.Center;
                 seq[i].Foreground = Brushes.Red;
                 seq[i].Background = Brushes.Black;
-                seq[i].FontSize = 16;
+                seq[i].FontSize = 9;
+                seq[i].BorderThickness = new Thickness(0.0);
+                seq[i].FontWeight = FontWeights.Bold;
                 seq[i].Name = blockNum;
-                seq[i].SetValue(Grid.RowProperty, 1);
-                seq[i].TextAlignment = TextAlignment.Center;
+                seq[i].SetValue(Grid.RowProperty, 0);
+                seq[i].Click += SeqButton_Click;
+
+
                 int colNum = (i * 2) + 1;
                 seq[i].SetValue(Grid.ColumnProperty, (colNum));
                 seq[i].Background = Brushes.Transparent;
                 DataGrid.Children.Add(seq[i]);
-            }
-            
-            //for (var i = 0; i < seqLength; ++i)
-            //{
-            //    string hydroName = "hydroPlot_" + i;
-            //}
 
-            
-            
-        }
+                indexNumbers[i].Text = i + "";
+                
+                indexNumbers[i].FontSize = 9;
+                indexNumbers[i].TextWrapping = TextWrapping.Wrap;
+                indexNumbers[i].HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+                indexNumbers[i].VerticalAlignment = System.Windows.VerticalAlignment.Center;
+                indexNumbers[i].Foreground = Brushes.Red;
+                indexNumbers[i].Background = Brushes.Black;
+                indexNumbers[i].SetValue(Grid.RowProperty, 1);
+                indexNumbers[i].SetValue(Grid.ColumnProperty, (colNum));
+                DataGrid.Children.Add(indexNumbers[i]);
+            }
+
+
+
+
+        } 
+        #endregion
 
         #region Private Methods
+
+        private void SeqButton_Click(object sender, EventArgs e)
+        {
+            
+        }
         private void StartAnalysisTool_Click(object sender, RoutedEventArgs e)
         {
             if (setupData.Name == "")
@@ -163,8 +204,8 @@ namespace SecondaryStructureTool
             if (!setupData.BadSequence)
             {
                 Setup.Visibility = System.Windows.Visibility.Collapsed;
-                DataManipulationGrid.Visibility = System.Windows.Visibility.Visible;
-
+                Results.Visibility = System.Windows.Visibility.Visible;
+                Title.Visibility = System.Windows.Visibility.Collapsed;
                 //start hydropathy plot method
                 hydroPlotter.InitHydroPlotter(setupData.Sequence);
                 //start chou-fasman method
@@ -197,7 +238,8 @@ namespace SecondaryStructureTool
         private void Reset_Clicked(object sender, RoutedEventArgs e)
         {
             Setup.Visibility = System.Windows.Visibility.Visible;
-            DataManipulationGrid.Visibility = System.Windows.Visibility.Collapsed;
+            Results.Visibility = System.Windows.Visibility.Collapsed;
+            Title.Visibility = System.Windows.Visibility.Visible;
             //remove data from setup data variables
             setupData.Name = "";
             setupData.Sequence = "";
@@ -216,38 +258,157 @@ namespace SecondaryStructureTool
             }
         }
 
+
+        #region Hydropathy
+
         private void DrawHydropathyPlot()
         {
-            Polyline transMem = new Polyline();
-            transMem.StrokeThickness = 4;
-            transMem.Stroke = Brushes.BlueViolet;
-            transMem.Name = "transMem";
+            Polyline transMem_KD = new Polyline();
+            transMem_KD.StrokeThickness = 4;
+            transMem_KD.Stroke = Brushes.BlueViolet;
+            transMem_KD.Name = "transMem_KD";
             bool firstPoint = true;
-            int location = 265; // sets the position of the starting point to be centered over the 9th residue.
+            int offset = 25 * (transMem / 2);
+            int location = 15 + offset;
             for (var i = (int)hydroPlotter.SequenceKDTransMembrane[0]; i < hydroPlotter.SequenceKDTransMembrane[hydroPlotter.SequenceKDTransMembrane.Length - 1]; ++i)
             {
-                Point p = new Point(location, 300 - (hydroPlotter.SequenceKDTransMembrane[i] * 6));
-                transMem.Points.Add(p);
+                Point p = new Point(location, 300 - (hydroPlotter.SequenceKDTransMembrane[i] * ScaleFactor));
+                transMem_KD.Points.Add(p);
                 firstPoint = false;
                 location += 25;
             }
-            GraphGrid.Children.Add(transMem);
+            GraphGrid.Children.Add(transMem_KD);
 
-            Polyline surfaceRegion = new Polyline();
-            surfaceRegion.StrokeThickness = 4;
-            surfaceRegion.Stroke = Brushes.BlanchedAlmond;
-            surfaceRegion.Name = "surfaceRegion";
+            Polyline surfaceRegion_KD = new Polyline();
+            surfaceRegion_KD.StrokeThickness = 4;
+            surfaceRegion_KD.Stroke = Brushes.BlanchedAlmond;
+            surfaceRegion_KD.Name = "surfaceRegion_KD";
             firstPoint = true;
-            location = 140;
+            offset = 25 * (surfMem / 2);
+            location = 15 + offset; 
             for (var i = (int)hydroPlotter.SequenceKDSurfaceRegions[0]; i < hydroPlotter.SequenceKDSurfaceRegions[hydroPlotter.SequenceKDSurfaceRegions.Length - 1]; ++i)
             {
-                Point p = new Point(location, 300 - (hydroPlotter.SequenceKDSurfaceRegions[i] * 6));
-                surfaceRegion.Points.Add(p);
+                Point p = new Point(location, 300 - (hydroPlotter.SequenceKDSurfaceRegions[i] * ScaleFactor));
+                surfaceRegion_KD.Points.Add(p);
                 firstPoint = false;
                 location += 25;
             }
-            GraphGrid.Children.Add(surfaceRegion);
+            GraphGrid.Children.Add(surfaceRegion_KD);
+
+            Polyline transMem_HW = new Polyline();
+            transMem_HW.StrokeThickness = 4;
+            transMem_HW.Stroke = Brushes.BlueViolet;
+            transMem_HW.Name = "transMem_HW";
+            firstPoint = true;
+            offset = 25 * (transMem / 2);
+            location = 15 + offset; 
+            for (var i = (int)hydroPlotter.SequenceHWTransMembrane[0]; i < hydroPlotter.SequenceHWTransMembrane[hydroPlotter.SequenceHWTransMembrane.Length - 1]; ++i)
+            {
+                Point p = new Point(location, 300 - (hydroPlotter.SequenceHWTransMembrane[i] * ScaleFactor));
+                transMem_HW.Points.Add(p);
+                firstPoint = false;
+                location += 25;
+            }
+            GraphGrid.Children.Add(transMem_HW);
+
+            Polyline surfaceRegion_HW = new Polyline();
+            surfaceRegion_HW.StrokeThickness = 4;
+            surfaceRegion_HW.Stroke = Brushes.BlanchedAlmond;
+            surfaceRegion_HW.Name = "surfaceRegion_HW";
+            firstPoint = true;
+            offset = 25 * (surfMem / 2);
+            location = 15 + offset;
+            for (var i = (int)hydroPlotter.SequenceHWSurfaceRegions[0]; i < hydroPlotter.SequenceHWSurfaceRegions[hydroPlotter.SequenceHWSurfaceRegions.Length - 1]; ++i)
+            {
+                Point p = new Point(location, 300 - (hydroPlotter.SequenceHWSurfaceRegions[i] * ScaleFactor));
+                surfaceRegion_HW.Points.Add(p);
+                firstPoint = false;
+                location += 25;
+            }
+            GraphGrid.Children.Add(surfaceRegion_HW);
+
+
+
+
             SurfaceRegion_TransMembrane.IsChecked = true;
+            Kyte_Doolittle.IsChecked = true;
+        }
+
+        /// <summary>
+        /// Creates a custom window size hydropathy plot minimum size = 5 max size = 30
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CreateCustomWindow_Clicked(object sender, RoutedEventArgs e)
+        {
+            // custom window exists, delete custom windows -- reset for new window size
+            if (CustomWindowActive)
+            {
+                if (setupData.Sequence != "")
+                {
+                    for (int i = VisualTreeHelper.GetChildrenCount(this.GraphGrid) - 1; i > 0; --i)
+                    {
+                        var child = VisualTreeHelper.GetChild(this.GraphGrid, i) as FrameworkElement;
+                        if (child != null && child.Name == "customWindow_KD")
+                        {
+                            GraphGrid.Children.Remove(child);
+                        }
+                        if (child != null && child.Name == "customWindow_HW")
+                        {
+                            GraphGrid.Children.Remove(child);
+                        }
+
+                    }
+                }
+
+                hydroPlotter.SequenceCustomWindowHW = new float[hydroPlotter.Sequence.Length];
+                hydroPlotter.SequenceCustomWindowKD = new float[hydroPlotter.Sequence.Length];
+                CustomWindowActive = false;
+                SurfaceRegion_TransMembrane.IsChecked = true;
+                CustomWindowButton.Content = "Create";
+                HydropathyWindowSize.Text = "";
+            }
+            else // no window exists, create new custome window for both KD and HW
+            {
+                CustomWindowActive = true;
+                CustomWindowButton.Content = "Reset";
+                int windowsize = Convert.ToInt32(this.HydropathyWindowSize.Text);
+                hydroPlotter.RunCustomWindow(windowsize, hydroPlotter.SequenceCustomWindowKD, "KD"); // run custom window with Kyte Doolittle values
+                hydroPlotter.RunCustomWindow(windowsize, hydroPlotter.SequenceCustomWindowHW, "HW"); // run custom window with Hopp Woods Values
+
+                Polyline Custom_KD = new Polyline();
+                Custom_KD.StrokeThickness = 4;
+                Custom_KD.Stroke = Brushes.CornflowerBlue;
+                Custom_KD.Name = "customWindow_KD";
+                bool firstPoint = true;
+                int offset = 25 * (windowsize / 2);
+                int location = 15 + offset; 
+                for (var i = (int)hydroPlotter.SequenceCustomWindowKD[0]; i < hydroPlotter.SequenceCustomWindowKD[hydroPlotter.SequenceCustomWindowKD.Length - 1]; ++i)
+                {
+                    Point p = new Point(location, 300 - (hydroPlotter.SequenceCustomWindowKD[i] * ScaleFactor));
+                    Custom_KD.Points.Add(p);
+                    firstPoint = false;
+                    location += 25;
+                }
+                GraphGrid.Children.Add(Custom_KD);
+
+                Polyline Custom_HW = new Polyline();
+                Custom_HW.StrokeThickness = 4;
+                Custom_HW.Stroke = Brushes.CornflowerBlue;
+                Custom_HW.Name = "customWindow_HW";
+                firstPoint = true;
+                offset = 25 * (windowsize / 2);
+                location = 15 + offset;
+                for (var i = (int)hydroPlotter.SequenceCustomWindowHW[0]; i < hydroPlotter.SequenceCustomWindowHW[hydroPlotter.SequenceCustomWindowHW.Length - 1]; ++i)
+                {
+                    Point p = new Point(location, 300 - (hydroPlotter.SequenceCustomWindowHW[i] * ScaleFactor));
+                    Custom_HW.Points.Add(p);
+                    firstPoint = false;
+                    location += 25;
+                }
+                GraphGrid.Children.Add(Custom_HW);
+                ShowAllHydroPlots.IsChecked = true;
+            }
         }
 
         private void TransMembraneOnly_Checked(object sender, RoutedEventArgs e)
@@ -258,15 +419,31 @@ namespace SecondaryStructureTool
                 for (int i = 0; i < VisualTreeHelper.GetChildrenCount(this.GraphGrid); ++i)
                 {
                     var child = VisualTreeHelper.GetChild(this.GraphGrid, i) as FrameworkElement;
-                    if (child != null && child.Name == "transMem")
+                    if (Kyte_Doolittle.IsChecked == true)
                     {
-                        transMemCntl = (Polyline)child;
-                        transMemCntl.Visibility = System.Windows.Visibility.Visible;
+                        if (child != null && child.Name == "transMem_KD")
+                        {
+                            transMemCntl = (Polyline)child;
+                            transMemCntl.Visibility = System.Windows.Visibility.Visible;
+                        }
+                        if (child != null && child.Name == "surfaceRegion_KD")
+                        {
+                            surfaceCntl = (Polyline)child;
+                            surfaceCntl.Visibility = System.Windows.Visibility.Hidden;
+                        }
                     }
-                    if (child != null && child.Name == "surfaceRegion")
+                    else
                     {
-                        surfaceCntl = (Polyline)child;
-                        surfaceCntl.Visibility = System.Windows.Visibility.Hidden;
+                        if (child != null && child.Name == "transMem_HW")
+                        {
+                            transMemCntl = (Polyline)child;
+                            transMemCntl.Visibility = System.Windows.Visibility.Visible;
+                        }
+                        if (child != null && child.Name == "surfaceRegion_HW")
+                        {
+                            surfaceCntl = (Polyline)child;
+                            surfaceCntl.Visibility = System.Windows.Visibility.Hidden;
+                        }
                     }
                 }
             }
@@ -280,15 +457,31 @@ namespace SecondaryStructureTool
                 for (int i = 0; i < VisualTreeHelper.GetChildrenCount(this.GraphGrid); ++i)
                 {
                     var child = VisualTreeHelper.GetChild(this.GraphGrid, i) as FrameworkElement;
-                    if (child != null && child.Name == "transMem")
+                    if (Kyte_Doolittle.IsChecked == true)
                     {
-                        transMemCntl = (Polyline)child;
-                        transMemCntl.Visibility = System.Windows.Visibility.Hidden;
+                        if (child != null && child.Name == "transMem_KD")
+                        {
+                            transMemCntl = (Polyline)child;
+                            transMemCntl.Visibility = System.Windows.Visibility.Hidden;
+                        }
+                        if (child != null && child.Name == "surfaceRegion_KD")
+                        {
+                            surfaceCntl = (Polyline)child;
+                            surfaceCntl.Visibility = System.Windows.Visibility.Visible;
+                        }
                     }
-                    if (child != null && child.Name == "surfaceRegion")
+                    else
                     {
-                        surfaceCntl = (Polyline)child;
-                        surfaceCntl.Visibility = System.Windows.Visibility.Visible;
+                        if (child != null && child.Name == "transMem_HW")
+                        {
+                            transMemCntl = (Polyline)child;
+                            transMemCntl.Visibility = System.Windows.Visibility.Hidden;
+                        }
+                        if (child != null && child.Name == "surfaceRegion_HW")
+                        {
+                            surfaceCntl = (Polyline)child;
+                            surfaceCntl.Visibility = System.Windows.Visibility.Visible;
+                        }
                     }
                 }
             }
@@ -302,15 +495,31 @@ namespace SecondaryStructureTool
                 for (int i = 0; i < VisualTreeHelper.GetChildrenCount(this.GraphGrid); ++i)
                 {
                     var child = VisualTreeHelper.GetChild(this.GraphGrid, i) as FrameworkElement;
-                    if (child != null && child.Name == "transMem")
+                    if (Kyte_Doolittle.IsChecked == true)
                     {
-                        transMemCntl = (Polyline)child;
-                        transMemCntl.Visibility = System.Windows.Visibility.Visible;
+                        if (child != null && child.Name == "transMem_KD")
+                        {
+                            transMemCntl = (Polyline)child;
+                            transMemCntl.Visibility = System.Windows.Visibility.Visible;
+                        }
+                        if (child != null && child.Name == "surfaceRegion_KD")
+                        {
+                            surfaceCntl = (Polyline)child;
+                            surfaceCntl.Visibility = System.Windows.Visibility.Visible;
+                        }
                     }
-                    if (child != null && child.Name == "surfaceRegion")
+                    else
                     {
-                        surfaceCntl = (Polyline)child;
-                        surfaceCntl.Visibility = System.Windows.Visibility.Visible;
+                        if (child != null && child.Name == "transMem_HW")
+                        {
+                            transMemCntl = (Polyline)child;
+                            transMemCntl.Visibility = System.Windows.Visibility.Visible;
+                        }
+                        if (child != null && child.Name == "surfaceRegion_HW")
+                        {
+                            surfaceCntl = (Polyline)child;
+                            surfaceCntl.Visibility = System.Windows.Visibility.Visible;
+                        }
                     }
                 }
             }
@@ -318,21 +527,77 @@ namespace SecondaryStructureTool
 
         private void ShowAllHydroPlots_Checked(object sender, RoutedEventArgs e)
         {
-            Polyline transMemCntl, surfaceCntl;
+            Polyline testLine;
             if (setupData.Sequence != "")
             {
                 for (int i = 0; i < VisualTreeHelper.GetChildrenCount(this.GraphGrid); ++i)
                 {
                     var child = VisualTreeHelper.GetChild(this.GraphGrid, i) as FrameworkElement;
-                    if (child != null && child.Name == "transMem")
+                    if (Kyte_Doolittle.IsChecked == true)
                     {
-                        transMemCntl = (Polyline)child;
-                        transMemCntl.Visibility = System.Windows.Visibility.Visible;
+                        if (child != null && child.Name == "transMem_KD")
+                        {
+                            testLine = (Polyline)child;
+                            testLine.Visibility = System.Windows.Visibility.Visible;
+                        }
+                        if (child != null && child.Name == "surfaceRegion_KD")
+                        {
+                            testLine = (Polyline)child;
+                            testLine.Visibility = System.Windows.Visibility.Visible;
+                        }
+                        if (child != null && child.Name == "customWindow_KD")
+                        {
+                            testLine = (Polyline)child;
+                            testLine.Visibility = System.Windows.Visibility.Visible;
+                        }
+                        if (child != null && child.Name == "transMem_HW")
+                        {
+                            testLine = (Polyline)child;
+                            testLine.Visibility = System.Windows.Visibility.Hidden;
+                        }
+                        if (child != null && child.Name == "surfaceRegion_HW")
+                        {
+                            testLine = (Polyline)child;
+                            testLine.Visibility = System.Windows.Visibility.Hidden;
+                        }
+                        if (child != null && child.Name == "customWindow_HW")
+                        {
+                            testLine = (Polyline)child;
+                            testLine.Visibility = System.Windows.Visibility.Hidden;
+                        }
                     }
-                    if (child != null && child.Name == "surfaceRegion")
+                    else
                     {
-                        surfaceCntl = (Polyline)child;
-                        surfaceCntl.Visibility = System.Windows.Visibility.Visible;
+                        if (child != null && child.Name == "transMem_KD")
+                        {
+                            testLine = (Polyline)child;
+                            testLine.Visibility = System.Windows.Visibility.Hidden;
+                        }
+                        if (child != null && child.Name == "surfaceRegion_KD")
+                        {
+                            testLine = (Polyline)child;
+                            testLine.Visibility = System.Windows.Visibility.Hidden;
+                        }
+                        if (child != null && child.Name == "customWindow_KD")
+                        {
+                            testLine = (Polyline)child;
+                            testLine.Visibility = System.Windows.Visibility.Hidden;
+                        }
+                        if (child != null && child.Name == "transMem_HW")
+                        {
+                            testLine = (Polyline)child;
+                            testLine.Visibility = System.Windows.Visibility.Visible;
+                        }
+                        if (child != null && child.Name == "surfaceRegion_HW")
+                        {
+                            testLine = (Polyline)child;
+                            testLine.Visibility = System.Windows.Visibility.Visible;
+                        }
+                        if (child != null && child.Name == "customWindow_HW")
+                        {
+                            testLine = (Polyline)child;
+                            testLine.Visibility = System.Windows.Visibility.Visible;
+                        }
                     }
                 }
             }
@@ -346,12 +611,17 @@ namespace SecondaryStructureTool
                 for (int i = 0; i < VisualTreeHelper.GetChildrenCount(this.GraphGrid); ++i)
                 {
                     var child = VisualTreeHelper.GetChild(this.GraphGrid, i) as FrameworkElement;
-                    if (child != null && child.Name == "transMem")
+                    if (child != null && (child.Name == "transMem_KD" || child.Name == "transMem_HW"))
                     {
                         transMemCntl = (Polyline)child;
                         transMemCntl.Visibility = System.Windows.Visibility.Hidden;
                     }
-                    if (child != null && child.Name == "surfaceRegion")
+                    if (child != null && (child.Name == "surfaceRegion_KD" || child.Name == "surfaceRegion_HW"))
+                    {
+                        surfaceCntl = (Polyline)child;
+                        surfaceCntl.Visibility = System.Windows.Visibility.Hidden;
+                    }
+                    if (child != null && (child.Name == "customWindow_KD" || child.Name == "customWindow_HW"))
                     {
                         surfaceCntl = (Polyline)child;
                         surfaceCntl.Visibility = System.Windows.Visibility.Hidden;
@@ -362,59 +632,201 @@ namespace SecondaryStructureTool
 
         private void CustomWindow_Checked(object sender, RoutedEventArgs e)
         {
-            Polyline transMemCntl, surfaceCntl;
+            Polyline testLine;
             if (setupData.Sequence != "")
             {
                 for (int i = 0; i < VisualTreeHelper.GetChildrenCount(this.GraphGrid); ++i)
                 {
                     var child = VisualTreeHelper.GetChild(this.GraphGrid, i) as FrameworkElement;
-                    if (child != null && child.Name == "transMem")
+
+                    if (child != null && (child.Name == "customWindow_KD" || child.Name == "customWindow_HW"))
                     {
-                        transMemCntl = (Polyline)child;
-                        transMemCntl.Visibility = System.Windows.Visibility.Hidden;
+                        testLine = (Polyline)child;
+                        if (Kyte_Doolittle.IsChecked == true)
+                        {
+                            
+                            if (child.Name == "customWindow_KD")
+                            {
+                                testLine.Visibility = System.Windows.Visibility.Visible;
+                            }
+                            else
+                            {
+                                testLine.Visibility = System.Windows.Visibility.Hidden;
+                            }
+                        }
+                        else
+                        {
+                            if (child.Name == "customWindow_HW")
+                            {
+                                testLine.Visibility = System.Windows.Visibility.Visible;
+                            }
+                            else
+                            {
+                                testLine.Visibility = System.Windows.Visibility.Hidden;
+                            }
+                        }
                     }
-                    if (child != null && child.Name == "surfaceRegion")
+
+                    
+                    
+                    if (child != null && (child.Name == "transMem_KD" || child.Name == "transMem_HW"))
                     {
-                        surfaceCntl = (Polyline)child;
-                        surfaceCntl.Visibility = System.Windows.Visibility.Hidden;
+                        testLine = (Polyline)child;
+                        testLine.Visibility = System.Windows.Visibility.Hidden;
+                    }
+                    if (child != null && (child.Name == "surfaceRegion_KD" || child.Name == "surfaceRegion_HW"))
+                    {
+                        testLine = (Polyline)child;
+                        testLine.Visibility = System.Windows.Visibility.Hidden;
                     }
                 }
             }
-        } 
+        }
+
+
+        private void KyteDoolittle_Checked(object sender, RoutedEventArgs e)
+        {
+            Polyline testLine;
+            if (setupData.Sequence != "")
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(this.GraphGrid); ++i)
+                {
+                    var child = VisualTreeHelper.GetChild(this.GraphGrid, i) as FrameworkElement;
+                    if (child != null && child.Name == "transMem_KD")
+                    {
+                        testLine = (Polyline)child;
+                        if (ShowAllHydroPlots.IsChecked == true || SurfaceRegion_TransMembrane.IsChecked == true || TransMembrane.IsChecked == true)
+                        {
+                            testLine.Visibility = System.Windows.Visibility.Visible;
+                        }
+                    }
+                    if (child != null && child.Name == "surfaceRegion_KD")
+                    {
+                        testLine = (Polyline)child;
+                        if (ShowAllHydroPlots.IsChecked == true || SurfaceRegion_TransMembrane.IsChecked == true || SurfaceRegion.IsChecked == true)
+                        {
+                            testLine.Visibility = System.Windows.Visibility.Visible;
+                        }
+                    }
+                    if (child != null && child.Name == "customWindow_KD")
+                    {
+                        testLine = (Polyline)child;
+                        if (ShowAllHydroPlots.IsChecked == true || SurfaceRegion_TransMembrane.IsChecked == true || SurfaceRegion.IsChecked == true)
+                        {
+                            testLine.Visibility = System.Windows.Visibility.Visible;
+                        }
+                    }
+                    if (child != null && child.Name == "transMem_HW")
+                    {
+                        testLine = (Polyline)child;
+                        testLine.Visibility = System.Windows.Visibility.Hidden;
+                    }
+                    if (child != null && child.Name == "surfaceRegion_HW")
+                    {
+                        testLine = (Polyline)child;
+                        testLine.Visibility = System.Windows.Visibility.Hidden;
+                    }
+                    if (child != null && child.Name == "customWindow_HW")
+                    {
+                        testLine = (Polyline)child;
+                        testLine.Visibility = System.Windows.Visibility.Hidden;
+                    }
+                }
+            }
+        }
+
+        private void HoppWoods_Checked(object sender, RoutedEventArgs e)
+        {
+            Polyline testLine;
+            if (setupData.Sequence != "")
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(this.GraphGrid); ++i)
+                {
+                    var child = VisualTreeHelper.GetChild(this.GraphGrid, i) as FrameworkElement;
+                    if (child != null && child.Name == "transMem_HW")
+                    {
+                        testLine = (Polyline)child;
+                        if (ShowAllHydroPlots.IsChecked == true || SurfaceRegion_TransMembrane.IsChecked == true || TransMembrane.IsChecked == true)
+                        {
+                            testLine.Visibility = System.Windows.Visibility.Visible;
+                        }
+                    }
+                    if (child != null && child.Name == "surfaceRegion_HW")
+                    {
+                        testLine = (Polyline)child;
+                        if (ShowAllHydroPlots.IsChecked == true || SurfaceRegion_TransMembrane.IsChecked == true || SurfaceRegion.IsChecked == true)
+                        {
+                            testLine.Visibility = System.Windows.Visibility.Visible;
+                        }
+                    }
+                    if (child != null && child.Name == "customWindow_HW")
+                    {
+                        testLine = (Polyline)child;
+                        if (ShowAllHydroPlots.IsChecked == true || SurfaceRegion_TransMembrane.IsChecked == true || SurfaceRegion.IsChecked == true)
+                        {
+                            testLine.Visibility = System.Windows.Visibility.Visible;
+                        }
+                    }
+                    if (child != null && child.Name == "transMem_KD")
+                    {
+                        testLine = (Polyline)child;
+                        testLine.Visibility = System.Windows.Visibility.Hidden;
+                    }
+                    if (child != null && child.Name == "surfaceRegion_KD")
+                    {
+                        testLine = (Polyline)child;
+                        testLine.Visibility = System.Windows.Visibility.Hidden;
+                    }
+                    if (child != null && child.Name == "customWindow_KD")
+                    {
+                        testLine = (Polyline)child;
+                        testLine.Visibility = System.Windows.Visibility.Hidden;
+                    }
+                }
+            }
+        }
+
+
+        #endregion
 
         private void UpdateSize(object sender, SizeChangedEventArgs e)
         {
             double newWidth = PrimaryWindow.ActualWidth;
             double newHeight = PrimaryWindow.ActualHeight;
-
-            //if (newWidth > width && newHeight > height)
-            //{
-            //    //scale contents larger
-            //}
-            //if (newWidth < width && newHeight < height)
-            //{
-            //    //scale contents smaller
-            //}
+            double expandVal = 0;
+            double growValR = 0;
+            double growValD = 0;
+                       
             if (newWidth > width && width != 0)
             {
-                double expandVal = newWidth - width;
-                double growVal = DataGridScroller.ActualWidth;
-                growVal += expandVal;
-                DataGridScroller.SetValue(Grid.WidthProperty, growVal);
+                expandVal = newWidth - width;
+                growValR = Results.ActualWidth;
+                growValD = DataGridScroller.ActualWidth;
+                growValR += expandVal;
+                growValD += expandVal;
+                DataGridScroller.SetValue(Grid.WidthProperty, growValD);
+                Results.SetValue(Grid.WidthProperty, growValR);
             }
             if (newWidth < width && width != 0)
-            {
-                double expandVal = newWidth - width;
-                double growVal = DataGridScroller.ActualWidth;
-                growVal += expandVal;
-                DataGridScroller.SetValue(Grid.WidthProperty, growVal);
+            { 
+                expandVal = newWidth - width;
+                growValR = Results.ActualWidth;
+                growValD = DataGridScroller.ActualWidth;
+                growValR += expandVal;
+                growValD += expandVal;
+                DataGridScroller.SetValue(Grid.WidthProperty, growValD);
+                Results.SetValue(Grid.WidthProperty, growValR);
             }
             width = PrimaryWindow.ActualWidth;
             height = PrimaryWindow.ActualHeight;
 
         }
 
-        
+        private void MouseDownSequence_Clicked(object sender, MouseButtonEventArgs e)
+        {
+
+        }
         #endregion
+
     }
 }

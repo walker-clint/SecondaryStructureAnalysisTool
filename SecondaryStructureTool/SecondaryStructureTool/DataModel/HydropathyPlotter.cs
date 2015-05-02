@@ -26,8 +26,9 @@ namespace SecondaryStructureTool.DataModel
         private string sequence;
         private char[] AA = { 'I', 'V', 'L', 'F', 'C', 'M', 'A', 'G', 'T', 'W', 'S', 'Y', 'P', 'H', 'E', 'Q', 'D', 'N', 'K', 'R' };
         private float[] kyteDoolittleValues = { 4.5f, 4.2f, 3.8f, 2.8f, 2.5f, 1.9f, 1.8f, -0.4f, -0.7f, -0.9f, -0.8f, -1.3f, -1.6f, -3.2f, -3.5f, -3.5f, -3.5f, -3.5f, -3.9f, -4.5f };
-        private float[] hoppWoodsValues;
+        private float[] hoppWoodsValues = { -1.8f, -1.5f, -1.8f, -2.5f, -1.0f, -1.3f, -0.5f, 0.0f, -0.4f, -3.4f, 0.3f, -2.3f, 0.0f, -0.5f, 3.0f, 0.2f, 3.0f, 0.2f, 3.0f, 3.0f };
         private Dictionary<char, float> kyteDoolittleScale;
+        private Dictionary<char, float> hoppWoodsScale;
         private float[] sequenceKyteDoolittleScores;
         private float[] sequenceHoppWoodsScores;
         private float[] sequenceKDTransMembrane;  //window size 19
@@ -39,7 +40,15 @@ namespace SecondaryStructureTool.DataModel
         #endregion
 
         #region Public Properties
-
+        public string Sequence
+        {
+            get { return sequence; }
+            set
+            {
+                sequence = value;
+                NotifyPropertyChanged("Sequence");
+            }
+        }
         public float[] SequenceCustomWindowKD
         {
             get { return sequenceCustomWindowKD; }
@@ -129,90 +138,121 @@ namespace SecondaryStructureTool.DataModel
 
         public void InitHydroPlotter(string _sequence)
         {
-            sequence = _sequence;
-            sequenceKyteDoolittleScores = new float[sequence.Length];
-            //sequenceHoppWoodsScores = new float[sequence.Length];
-            sequenceKDTransMembrane = new float[sequence.Length];
-            sequenceKDSurfaceRegions = new float[sequence.Length];
+            Sequence = _sequence;
+            SequenceKyteDoolittleScores = new float[sequence.Length];
+            SequenceHoppWoodsScores = new float[sequence.Length];
+            SequenceKDTransMembrane = new float[sequence.Length];
+            SequenceKDSurfaceRegions = new float[sequence.Length];
             SequenceHWSurfaceRegions = new float[sequence.Length];
             SequenceHWTransMembrane = new float[sequence.Length];
+            SequenceCustomWindowKD = new float[sequence.Length];
+            SequenceCustomWindowHW = new float[sequence.Length];
             kyteDoolittleScale = new Dictionary<char, float>();
+            hoppWoodsScale = new Dictionary<char, float>();
             PopulateScales();
             SetValues();
             RunTransMembraneAndSurface();
             
         }
 
+        /// <summary>
+        /// Runs standard window size calculation for Kyte Doolittle and Hopp Woods scales
+        /// Standard window sizes are 19 (Trans Membrane) and 9 (Surface Region)
+        /// </summary>
         public void RunTransMembraneAndSurface()
         {
-            int transMem = 19;
-            int surf = 9;
+            int transMem = 19; //Best size for transmembrane detection
+            int surf = 9; //Best size for surface region detection
+
+            RunCustomWindow(surf, SequenceKDSurfaceRegions, "KD");
+            RunCustomWindow(transMem, SequenceKDTransMembrane, "KD");
+            RunCustomWindow(surf, SequenceHWSurfaceRegions, "HW");
+            RunCustomWindow(transMem, SequenceHWTransMembrane, "HW");
+        }
+
+        public void RunCustomWindow(int windowSize, float[] WindowData, string scale)
+        {
             
-            SequenceHWSurfaceRegions[0] = 5;
-            SequenceHWTransMembrane[0] = 10;
-            SequenceKDSurfaceRegions[0] = 5;
-            SequenceKDTransMembrane[0] = 10;
-            SequenceHWSurfaceRegions[sequence.Length-1] = sequence.Length - 5;
-            SequenceHWTransMembrane[sequence.Length-1] = sequence.Length - 9;
-            SequenceKDSurfaceRegions[sequence.Length-1] = sequence.Length - 5;
-            SequenceKDTransMembrane[sequence.Length-1] = sequence.Length - 9;
-          
-
-
-            for (var i = 5; i < sequence.Length - 5; i++)
+            int halfWindow = 0, start = 0, stop = 0, iStop = 0;
+            if (windowSize >= 5 && windowSize <= 40)
             {
-                //check to see if 19 AA are left in sequence from i
-
-                int index = i, index2 = i, transStop = sequence.Length -9, surfStop = sequence.Length -5;
-                if (i < transStop && i > 9){
-                    sequenceKDTransMembrane[i] = sequenceKyteDoolittleScores[index - 9] + sequenceKyteDoolittleScores[index - 8]
-                        + sequenceKyteDoolittleScores[index - 7] + sequenceKyteDoolittleScores[index - 6] + sequenceKyteDoolittleScores[index - 5]
-                        + sequenceKyteDoolittleScores[index - 4] + sequenceKyteDoolittleScores[index - 3] + sequenceKyteDoolittleScores[index - 2]
-                        + sequenceKyteDoolittleScores[index - 1] + sequenceKyteDoolittleScores[index] + sequenceKyteDoolittleScores[index + 1]
-                        + sequenceKyteDoolittleScores[index + 2] + sequenceKyteDoolittleScores[index + 3] + sequenceKyteDoolittleScores[index + 4]
-                        + sequenceKyteDoolittleScores[index + 5] + sequenceKyteDoolittleScores[index + 6] + sequenceKyteDoolittleScores[index + 7]
-                        + sequenceKyteDoolittleScores[index + 8] + sequenceKyteDoolittleScores[index + 9];
-                    sequenceKDSurfaceRegions[i] = sequenceKyteDoolittleScores[index2 - 4] + sequenceKyteDoolittleScores[index2 - 3]
-                        + sequenceKyteDoolittleScores[index2 - 2] + sequenceKyteDoolittleScores[index2 - 1] + sequenceKyteDoolittleScores[index2]
-                        + sequenceKyteDoolittleScores[index2 + 1] + sequenceKyteDoolittleScores[index2 + 2] + sequenceKyteDoolittleScores[index2 + 3]
-                        + sequenceKyteDoolittleScores[index2 + 4];
-                }
-                else if (i < surfStop)
+                if (windowSize % 2 == 0)
                 {
-                    sequenceKDSurfaceRegions[i] = sequenceKyteDoolittleScores[index2 - 4] + sequenceKyteDoolittleScores[index2 - 3]
-                        + sequenceKyteDoolittleScores[index2 - 2] + sequenceKyteDoolittleScores[index2 - 1] + sequenceKyteDoolittleScores[index2]
-                        + sequenceKyteDoolittleScores[index2 + 1] + sequenceKyteDoolittleScores[index2 + 2] + sequenceKyteDoolittleScores[index2 + 3]
-                        + sequenceKyteDoolittleScores[index2 + 4];
+                    start = windowSize / 2;
+                    halfWindow = windowSize / 2;
+                    stop = halfWindow + 1;
+                    iStop = sequence.Length - stop;
                 }
                 else
                 {
-                    break;
+                    start = windowSize / 2;
+                    halfWindow = windowSize / 2 + 1;
+                    stop = halfWindow;
+                    iStop = sequence.Length - stop;
+                }
+
+                //sets start and stop points for graph. used to draw graph in MainWindow [0] us start [last entry] is stop.
+                WindowData[0] = start;
+                WindowData[WindowData.Length - 1] = iStop;
+
+                for (var i = start; i < iStop; i++)
+                {
+                    //check to see if 19 AA are left in sequence from i
+                  
+                    int jStart = i - start, jStop = i + stop;
+                    int testWidth = jStop - jStart;
+                    if (jStop < iStop )
+                    {
+                        
+                        for (int j = jStart; j <= jStop; ++j)
+                        {
+                            //Kyte Doolittle Scale
+                            if (scale == "KD")
+                            {
+                                WindowData[i] += SequenceKyteDoolittleScores[j];
+                            }
+                            //Hopp Wood Scale
+                            else if (scale == "HW")
+                            {
+                                WindowData[i] += SequenceHoppWoodsScores[j];
+                            }
+                            else
+                            { 
+                                //TODO -- error
+                            }
+                        }
+                    }
                 }
             }
-            
-
-        }
-
-        public void RunCustomWindow(int windowSize)
-        {
-
+            else
+            {
+                //CREATE ERROR
+            }
         }
         #endregion
 
         #region Private Methods
+        /// <summary>
+        /// Creates lookup tables for Kyte Doolittle and Hopp Woods Hydropathy plot scales for each amino acid
+        /// </summary>
         private void PopulateScales()
         {
             for (int i = 0; i < 20; ++i)
             {
-               kyteDoolittleScale.Add(AA[i], kyteDoolittleValues[i]);
+                kyteDoolittleScale.Add(AA[i], kyteDoolittleValues[i]);
+                hoppWoodsScale.Add(AA[i], hoppWoodsValues[i]);
             }
         }
 
+        /// <summary>
+        /// Sets the values for each amino acid for both Kyte Doolitte and Hopp Woods scale values.
+        /// </summary>
         private void SetValues()
         {
             for (var i = 0; i < sequence.Length; ++i)
             {
                 sequenceKyteDoolittleScores[i] = kyteDoolittleScale[sequence[i]];
+                sequenceHoppWoodsScores[i] = hoppWoodsScale[sequence[i]];
             }
         }
         #endregion

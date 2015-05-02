@@ -14,7 +14,7 @@
     </Window.Background>
 	
 		
-			<Viewbox x:Name="PrimaryView" Height="567" Stretch="Uniform" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" Margin="0,1" Width="1214">
+			<Viewbox x:Name="PrimaryView" Stretch="Uniform" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" Margin="10,10,0,-2.856" Width="1204">
 				<Viewbox.RenderTransform>
 					<TransformGroup>
 						<ScaleTransform/>
@@ -23,7 +23,7 @@
 						<TranslateTransform/>
 					</TransformGroup>
 				</Viewbox.RenderTransform>
-				<Canvas RenderTransformOrigin="0.5,0.5" Height="567" Width="1235.074" HorizontalAlignment="Left" >
+				<Canvas RenderTransformOrigin="0.5,0.5" Height="780.313" Width="1229.869" HorizontalAlignment="Left" >
 					<Canvas.RenderTransform>
 						<TransformGroup>
 							<ScaleTransform/>
@@ -32,7 +32,7 @@
 							<TranslateTransform/>
 						</TransformGroup>
 					</Canvas.RenderTransform>
-					<Grid x:Name="Title"  Background="#FF1EB80F" Height="712.151" Width="200" HorizontalAlignment="Left" RenderTransformOrigin="0.5,0.5" Canvas.Top="-96.649">
+					<Grid x:Name="Title"  Background="#FF1EB80F" Height="712.151" Width="200" HorizontalAlignment="Left" RenderTransformOrigin="0.5,0.5" Canvas.Top="15.851" Visibility="Hidden">
 						<Grid.RenderTransform>
 							<TransformGroup>
 								<ScaleTransform/>
@@ -47,7 +47,7 @@
 						<TextBlock Text="Ver: 1.0" FontSize="8" Margin="168.065,0,0,6.36" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
 
 					</Grid>
-					<Grid x:Name="Setup" Height="567" Canvas.Left="205" Width="288.858" HorizontalAlignment="Left" RenderTransformOrigin="0.5,0.5" DataContext="" >
+					<Grid x:Name="Setup" Height="567" Canvas.Left="213.645" Width="288.858" HorizontalAlignment="Left" RenderTransformOrigin="0.5,0.5" DataContext="" Canvas.Top="148.108" Visibility="Hidden" >
 						<Grid.RowDefinitions>
 							<RowDefinition Height="226*"/>
 							<RowDefinition Height="341*"/>
@@ -65,7 +65,7 @@
 								<SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveBorderColorKey}}"/>
 							</Rectangle.Fill>
 						</Rectangle>
-						<Rectangle HorizontalAlignment="Left" Height="477.348" Stroke="Black" VerticalAlignment="Top" Width="280.858" Margin="-2,0,0,0" StrokeThickness="0" Fill="#FFB3B3B3" RadiusX="10" RadiusY="10" Grid.RowSpan="2"/>
+						<Rectangle HorizontalAlignment="Left" Height="477.348" Stroke="Black" VerticalAlignment="Top" Width="280.858" Margin="-3.53,0,0,0" StrokeThickness="0" Fill="#FFB3B3B3" RadiusX="10" RadiusY="10" Grid.RowSpan="2"/>
 						<TextBox x:Name="AccessionNumber" Text="{Binding AccessionNumber}" Margin="-104.506,203.07,304.364,2.663" FontSize="8" VerticalAlignment="Center" HorizontalAlignment="Center" Width="89" Height="20.267" Background="#FFDEDEDE"/>
 						<Button x:Name="Submit" Content="Submit" HorizontalAlignment="Left" Margin="208.273,211.137,0,0" VerticalAlignment="Top" Width="49" Height="20" Background="#FF1EB80F" FontFamily="Arial Black" FontSize="10.667" FontWeight="Bold" Click="StartAnalysisTool_Click" Grid.Row="1"/>
 						<TextBox x:Name="JobID" Text="{Binding JobID}" Margin="26.429,35.414,173.429,171.379" FontSize="8" HorizontalAlignment="Center" VerticalAlignment="Center" Width="89" Height="19.319" Background="#FFD1D1D1"/>
@@ -94,73 +94,78 @@
 
 						</ComboBox>
 						<Label Content="Choose Database" HorizontalAlignment="Left" Margin="-109.53,142.43,0,0" VerticalAlignment="Top" Height="20" Width="79" FontSize="8"/>
-					</Grid>
+						<TextBlock HorizontalAlignment="Stretch" Height="Auto"  Margin="242.136,27.331,38.92,55.029" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center"/>					</Grid>
 
 
-					<Grid x:Name="Results" Height="712.151" Canvas.Left="493.858" Width="Auto" RenderTransformOrigin="0.5,0.5" Canvas.Top="-96.649">
-                    <Grid x:Name="Results_Title"  Margin="0,0,0,651.109" Width="Auto">
-                        <TextBlock x:Name="Sequence_Name" Text="{Binding Name}" Margin="10" Foreground="#FF1EB80F" FontSize="16" FontWeight="Bold"/>
-                    </Grid>
-                    <Grid x:Name="DataManipulationGrid" Margin="-287.845,0,726.142,10" Visibility="Collapsed">
-                    	<Grid x:Name="Chou_Fasman_Settings" Margin="10,283.583,25.873,155.143">
-                    		<Rectangle Fill="#FFB3B3B3" HorizontalAlignment="Left" Height="113.323" RadiusY="10" RadiusX="10" Stroke="Black" StrokeThickness="0" VerticalAlignment="Top" Width="246.885" Margin="0,0,-55.954,0"/>
-                    		<Grid x:Name="ShowDataGrid" Margin="147.149,18.178,-68.782,-4">
-                    			<Label Content="Show Data" HorizontalAlignment="Left" Margin="10.994,0,0,0" VerticalAlignment="Top"/>
-                    			<Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="69.118" Margin="0,19.853,0,0" VerticalAlignment="Top" Width="89.498" CornerRadius="10"/>
-                    			<RadioButton x:Name="Alpha_Helix" Content="Alpha-Helix" HorizontalAlignment="Left" Margin="3.472,23.143,0,0" VerticalAlignment="Top" />
-                    			<RadioButton x:Name="Beta_Sheet" Content="Beta-Sheet" HorizontalAlignment="Left" Margin="3.472,38.103,0,0" VerticalAlignment="Top"/>
-                    			<RadioButton x:Name="Loop_Coil" Content="Loop-Coil" HorizontalAlignment="Left" Margin="3.472,53.063,0,0" VerticalAlignment="Top"/>
-                    			<RadioButton x:Name="Show_All" Content="All" HorizontalAlignment="Left" Margin="3.472,68.023,0,0" VerticalAlignment="Top"/>
-                    		</Grid>
-                    		<Label Content="Chou-Fasman Settings" HorizontalAlignment="Left" Margin="20.347,0,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
-                    	</Grid>
-                    	<Button x:Name="Reset" Content="Reset" Click="Reset_Clicked"  HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Background="#FF1EB80F"/>
-                    	<Grid x:Name="Hydropathy_Plot_Settings" Margin="10,61.041,25.873,287.4">
-                    		<Rectangle Fill="#FFB3B3B3" HorizontalAlignment="Left" Height="206.408" RadiusY="10" RadiusX="10" Stroke="Black" StrokeThickness="0" VerticalAlignment="Top" Width="246.885"/>
-                    		<Label Content="Hydropathy Plot Settings" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
-                    		<Grid x:Name="ScaleGrid" Margin="13.524,19.677,117.691,127.17">
-                    			<Label Content="Scale" HorizontalAlignment="Left" Margin="5.083,0,0,35.853" Width="40.067"/>
-                    			<Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="41.368" Margin="0,19.85,0,0" VerticalAlignment="Top" Width="110.584" CornerRadius="10"/>
-                    			<RadioButton x:Name="Kyte_Doolittle" Content="Kyte-Doolittle" HorizontalAlignment="Left" Margin="8.035,25.859,0,0" VerticalAlignment="Top" />
-                    			<RadioButton x:Name="Hopp_Woods" Content="Hopp-Woods" HorizontalAlignment="Left" Margin="8.035,40.819,0,0" VerticalAlignment="Top"/>
-                    		</Grid>
-                    		<Grid x:Name="TypeGrid" Margin="13.524,81.389,10,28.825">
-                    			<Grid.ColumnDefinitions>
-                    				<ColumnDefinition Width="167*"/>
-                    				<ColumnDefinition Width="51*"/>
-                    			</Grid.ColumnDefinitions>
-                    			<Label Content="Type" HorizontalAlignment="Left" Margin="5.083,0,0,0"/>
-                    			<Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="97.146" Margin="0,19.85,0,0" VerticalAlignment="Top" Width="218.275" CornerRadius="10" Grid.ColumnSpan="2"/>
-                    			<RadioButton x:Name="TransMembrane" Content="TransMembrane (Window Size 19)" HorizontalAlignment="Left" Margin="8.035,25.859,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Checked="TransMembraneOnly_Checked"/>
-                    			<RadioButton x:Name="SurfaceRegion" Content="Surface Region (Window Size 9)" HorizontalAlignment="Left" Margin="8.035,40.819,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Checked="SurfaceRegionOnly_Checked"/>
-                    			<RadioButton x:Name="SurfaceRegion_TransMembrane" Content="Both Transmembrane and Surface" HorizontalAlignment="Left" Margin="8.035,55.779,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Checked="TransMemAndSurface_Checked"/>
-                    			<RadioButton x:Name="CustomWindow" Content="Custom Window" HorizontalAlignment="Left" Margin="8.035,70.739,0,0" VerticalAlignment="Top" Checked="CustomWindow_Checked"/>
-                    			<RadioButton x:Name="ShowAllHydroPlots" Content="Show All" HorizontalAlignment="Left" Margin="8.035,85.699,0,0" VerticalAlignment="Top" Checked="ShowAllHydroPlots_Checked"/>
-                    			<RadioButton x:Name="HideAllHydroPlots" Content="Hide All" HorizontalAlignment="Left" Margin="8.035,99.96,0,0" VerticalAlignment="Top" Checked="HideAllHydroPlots_Checked"/>
-                    		</Grid>
-                    		<Grid x:Name="HydroWindowSize" Margin="133.115,45.782,14.052,277.933">
-                    			<Grid.ColumnDefinitions>
-                    				<ColumnDefinition Width="67*"/>
-                    				<ColumnDefinition Width="51*"/>
-                    			</Grid.ColumnDefinitions>
-                    			<Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="41.368" Margin="-3.226,-6.011,0,-5.362" VerticalAlignment="Top" Width="110.584" CornerRadius="10" Grid.ColumnSpan="2"/>
-                    			<TextBlock Margin="0,-2.289,35.693,-3.324" TextWrapping="Wrap" Grid.ColumnSpan="2"><Run Text="Custom "/><LineBreak/><Run Text="Window Size"/></TextBlock>
-                    			<TextBox x:Name="HydropathyWindowSize" HorizontalAlignment="Left" Height="20.665" Margin="61.79,4.769,-3.878,0" TextWrapping="Wrap" Text="19" VerticalAlignment="Top" Width="28.146" Grid.Column="1"/>
-                    		</Grid>
-                    	</Grid>
-                    </Grid>
-                    <ScrollViewer x:Name="DataGridScroller" Margin="0,61.042,0,-30.521" HorizontalAlignment="Left" HorizontalScrollBarVisibility="Auto" CanContentScroll="True" VerticalScrollBarVisibility="Auto" Background="Black" Width="700">
+					<Grid x:Name="Results" Height="754.462" Canvas.Left="10" Width="1225.074" RenderTransformOrigin="0.5,0.5" Canvas.Top="15.851" HorizontalAlignment="Left" VerticalAlignment="Center">
+						<ScrollViewer x:Name="DataGridScroller" HorizontalAlignment="Left"  CanContentScroll="True" VerticalScrollBarVisibility="Auto" Background="Black" Width="Auto" HorizontalScrollBarVisibility="Visible" VerticalAlignment="Top" Height="693.738" Margin="0,50.724,0,0">
 						
-                    	<Grid x:Name="DataGridWrapper" Height="654.818" Width="Auto">
-						    <Grid x:Name="GraphGrid" Margin="10,0,0,0" HorizontalAlignment="Left"/>
-                    		<Grid x:Name="DataGrid" Height="100" Width="1907" Margin="10,541.54,-30,13.277" HorizontalAlignment="Left"/>
+							<Grid x:Name="DataGridWrapper" Height="675.989" Width="10.485" HorizontalAlignment="Left" VerticalAlignment="Top">
+								<Grid x:Name="GraphGrid"   Width="Auto" Margin="10,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="652.632"/>
+								<Grid x:Name="DataGrid" Height="100" Width="Auto" Margin="10,533.281,0,0" HorizontalAlignment="Left" MouseDown="MouseDownSequence_Clicked" VerticalAlignment="Top"/>
+								<Grid x:Name="ChouFasmanGrid" HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="10.485" Margin="0,258.479,0,0"/>
                         
-                    	</Grid>
+							</Grid>
                         
-                    </ScrollViewer>
+						</ScrollViewer>
+                    <Button x:Name="Reset" Content="Reset" Click="Reset_Clicked"  HorizontalAlignment="Left" Width="75" Background="#FF1EB80F" VerticalAlignment="Top" Margin="0,-24.96,0,0"/>
+						<Grid x:Name="Results_Title"  Margin="90,-21.249,0,0" Width="Auto" VerticalAlignment="Top" HorizontalAlignment="Left">
+							<TextBlock x:Name="Sequence_Name" Text="{Binding Name}" Margin="98.015,-5.434,29.155,30.521" Foreground="#FF1EB80F" FontSize="16" FontWeight="Bold"/>
+						</Grid>
+						<Grid x:Name="DataManipulationGrid" Margin="77.664,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="215.124">
+							<Expander Header="Chou-Fasman Settings" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#FFB3B3B3" FontWeight="Bold" Margin="189.774,-1.219,0,0" Height="119.86" IsExpanded="True">
+								<Grid Height="120.757" >
+									<Grid x:Name="Chou_Fasman_Settings" Margin="10,0,-2.165,24.434" >
+										<Rectangle Fill="#FFB3B3B3" HorizontalAlignment="Left"  RadiusY="10" RadiusX="10" Stroke="Black" StrokeThickness="0" VerticalAlignment="Top" Width="140.664" Height="90.084" Margin="0,2.689,0,0" />
+										<Label Content="Show Data" HorizontalAlignment="Left" Margin="28.294,-0.011,0,0" VerticalAlignment="Top"/>
+										<Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="69.118" Margin="17.342,19.843,0,0" VerticalAlignment="Top" Width="104.888" CornerRadius="10"/>
+										<RadioButton x:Name="Alpha_Helix" Content="Alpha-Helix" HorizontalAlignment="Left" Margin="20.772,23.132,0,0" VerticalAlignment="Top" />
+										<RadioButton x:Name="Beta_Sheet" Content="Beta-Sheet" HorizontalAlignment="Left" Margin="20.772,38.092,0,0" VerticalAlignment="Top"/>
+										<RadioButton x:Name="Loop_Coil" Content="Loop-Coil" HorizontalAlignment="Left" Margin="20.772,53.052,0,0" VerticalAlignment="Top"/>
+										<RadioButton x:Name="Show_All" Content="All" HorizontalAlignment="Left" Margin="20.772,68.012,0,0" VerticalAlignment="Top"/>
+									</Grid>
+								</Grid>
+							</Expander>
+							<Expander Header="Hydropathy Plot Settings" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#FFB3B3B3" IsExpanded="True" FontWeight="Bold" Height="206.335" Width="261.076" Margin="-76.302,-1.219,0,0">
+								<Grid  Width="266.162">
+									<Grid x:Name="Hydropathy_Plot_Settings" Margin="10,5.538,-67.111,-14.016">
+										<Rectangle Fill="#FFB3B3B3" HorizontalAlignment="Left" Height="178.797" RadiusY="10" RadiusX="10" Stroke="Black" StrokeThickness="0" VerticalAlignment="Top" Width="246.885"/>
+										<Grid x:Name="ScaleGrid" Margin="13.524,-4.653,132.269,135.425">
+											<Label Content="Scale" HorizontalAlignment="Left" Margin="5.083,0,0,35.853" Width="40.067"/>
+											<Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="41.368" Margin="0,19.85,0,0" VerticalAlignment="Top" Width="110.584" CornerRadius="10"/>
+											<RadioButton x:Name="Kyte_Doolittle" Content="Kyte-Doolittle" HorizontalAlignment="Left" Margin="8.035,25.859,0,0" VerticalAlignment="Top" Checked="KyteDoolittle_Checked"/>
+											<RadioButton x:Name="Hopp_Woods" Content="Hopp-Woods" HorizontalAlignment="Left" Margin="8.035,40.819,0,0" VerticalAlignment="Top" Checked="HoppWoods_Checked"/>
+										</Grid>
+										<Grid x:Name="TypeGrid" Margin="13.524,56.388,10,13.016">
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="167*"/>
+												<ColumnDefinition Width="51*"/>
+											</Grid.ColumnDefinitions>
+											<Label Content="Type" HorizontalAlignment="Left" Margin="5.083,0,0,0"/>
+											<Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="97.146" Margin="0,19.85,0,0" VerticalAlignment="Top" Width="229.624" CornerRadius="10"/>
+											<RadioButton x:Name="TransMembrane" Content="TransMembrane (Window Size 19)" HorizontalAlignment="Left" Margin="8.035,25.859,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Checked="TransMembraneOnly_Checked"/>
+											<RadioButton x:Name="SurfaceRegion" Content="Surface Region (Window Size 9)" HorizontalAlignment="Left" Margin="8.035,40.819,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Checked="SurfaceRegionOnly_Checked"/>
+											<RadioButton x:Name="SurfaceRegion_TransMembrane" Content="Both Transmembrane and Surface" HorizontalAlignment="Left" Margin="8.035,55.779,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Checked="TransMemAndSurface_Checked"/>
+											<RadioButton x:Name="CustomWindow" Content="Custom Window" HorizontalAlignment="Left" Margin="8.035,70.739,0,0" VerticalAlignment="Top" Checked="CustomWindow_Checked"/>
+											<RadioButton x:Name="ShowAllHydroPlots" Content="Show All" HorizontalAlignment="Left" Margin="8.035,85.699,0,0" VerticalAlignment="Top" Checked="ShowAllHydroPlots_Checked"/>
+											<RadioButton x:Name="HideAllHydroPlots" Content="Hide All" HorizontalAlignment="Left" Margin="8.035,99.96,0,0" VerticalAlignment="Top" Checked="HideAllHydroPlots_Checked"/>
+										</Grid>
+										<Grid x:Name="HydroWindowSize" Margin="133.115,21.106,0,116.997" HorizontalAlignment="Left" Width="113.77">
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="67*"/>
+												<ColumnDefinition Width="51*"/>
+											</Grid.ColumnDefinitions>
+											<Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="57.697" Margin="-3.71,-6.011,0,0" VerticalAlignment="Top" Width="110.584" CornerRadius="10" Grid.ColumnSpan="2"/>
+											<Button x:Name="CustomWindowButton" Content="Create" HorizontalAlignment="Left" VerticalAlignment="Top" Width="54.822" Margin="26.618,27.782,0,0" Background="#FF1EB80F" Click="CreateCustomWindow_Clicked" Grid.ColumnSpan="2" />
+											<TextBlock Margin="0,-6.011,37.538,25.928" TextWrapping="Wrap" Foreground="Black" Grid.ColumnSpan="2"><Run Text="Custom "/><LineBreak/><Run Text="Window Size"/></TextBlock>
+											<TextBox x:Name="HydropathyWindowSize" HorizontalAlignment="Left" Height="20.665" Margin="76.232,2.117,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="28.146" Grid.ColumnSpan="2"/>
+										</Grid>
+									</Grid>
+								</Grid>
+							</Expander>
+						</Grid>
                         
 					</Grid>
-					<TextBlock Text="testme" Canvas.Left="345.393" TextWrapping="Wrap"  Canvas.Top="502.893" Foreground="#FFF01313" IsManipulationEnabled="True" />
 
 				</Canvas>
 			</Viewbox>
