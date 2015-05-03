@@ -6,167 +6,218 @@
         Title="Secondary Structure Analysis Tool" Height="800" Width="1224"
 		 WindowStartupLocation="CenterScreen"
 		 SizeChanged="UpdateSize">
-	<Window.Resources>
-		<Color x:Key="BackGroundGray">#FFDEDEDE</Color>
-	</Window.Resources>
+    <Window.Resources>
+        <Color x:Key="BackGroundGray">#FFDEDEDE</Color>
+    </Window.Resources>
     <Window.Background>
         <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveCaptionTextColorKey}}"/>
     </Window.Background>
-	
-		
-			<Viewbox x:Name="PrimaryView" Stretch="Uniform" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" Margin="10,10,0,-2.856" Width="1204">
-				<Viewbox.RenderTransform>
-					<TransformGroup>
-						<ScaleTransform/>
-						<SkewTransform/>
-						<RotateTransform/>
-						<TranslateTransform/>
-					</TransformGroup>
-				</Viewbox.RenderTransform>
-				<Canvas RenderTransformOrigin="0.5,0.5" Height="780.313" Width="1229.869" HorizontalAlignment="Left" >
-					<Canvas.RenderTransform>
-						<TransformGroup>
-							<ScaleTransform/>
-							<SkewTransform/>
-							<RotateTransform/>
-							<TranslateTransform/>
-						</TransformGroup>
-					</Canvas.RenderTransform>
-					<Grid x:Name="Title"  Background="#FF1EB80F" Height="712.151" Width="200" HorizontalAlignment="Left" RenderTransformOrigin="0.5,0.5" Canvas.Top="15.851" Visibility="Hidden">
-						<Grid.RenderTransform>
-							<TransformGroup>
-								<ScaleTransform/>
-								<SkewTransform/>
-								<RotateTransform/>
-								<TranslateTransform/>
-							</TransformGroup>
-						</Grid.RenderTransform>
-						<TextBlock Text="Secondary Structure Analysis Tool" TextWrapping="Wrap" Margin="20,10,0,199" FontWeight="Bold" FontFamily="Showcard Gothic" FontSize="21.333"/>
-						<TextBlock Text="Written By: Clinton Walker" FontSize="8" Margin="10,0,0,17" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
-						<TextBlock Text="Bioinformatics Final Project 2015" FontSize="8" Margin="10,0,0,6.36" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
-						<TextBlock Text="Ver: 1.0" FontSize="8" Margin="168.065,0,0,6.36" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
-
-					</Grid>
-					<Grid x:Name="Setup" Height="567" Canvas.Left="213.645" Width="288.858" HorizontalAlignment="Left" RenderTransformOrigin="0.5,0.5" DataContext="" Canvas.Top="148.108" Visibility="Hidden" >
-						<Grid.RowDefinitions>
-							<RowDefinition Height="226*"/>
-							<RowDefinition Height="341*"/>
-						</Grid.RowDefinitions>
-						<Grid.RenderTransform>
-							<TransformGroup>
-								<ScaleTransform/>
-								<SkewTransform/>
-								<RotateTransform/>
-								<TranslateTransform/>
-							</TransformGroup>
-						</Grid.RenderTransform>
-						<Rectangle HorizontalAlignment="Left" Height="369.848" Stroke="Black" VerticalAlignment="Top" Width="280.858" Margin="-114.029,107.5,0,0" StrokeThickness="0" RadiusX="10" RadiusY="12" Grid.RowSpan="2">
-							<Rectangle.Fill>
-								<SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveBorderColorKey}}"/>
-							</Rectangle.Fill>
-						</Rectangle>
-						<Rectangle HorizontalAlignment="Left" Height="477.348" Stroke="Black" VerticalAlignment="Top" Width="280.858" Margin="-3.53,0,0,0" StrokeThickness="0" Fill="#FFB3B3B3" RadiusX="10" RadiusY="10" Grid.RowSpan="2"/>
-						<TextBox x:Name="AccessionNumber" Text="{Binding AccessionNumber}" Margin="-104.506,203.07,304.364,2.663" FontSize="8" VerticalAlignment="Center" HorizontalAlignment="Center" Width="89" Height="20.267" Background="#FFDEDEDE"/>
-						<Button x:Name="Submit" Content="Submit" HorizontalAlignment="Left" Margin="208.273,211.137,0,0" VerticalAlignment="Top" Width="49" Height="20" Background="#FF1EB80F" FontFamily="Arial Black" FontSize="10.667" FontWeight="Bold" Click="StartAnalysisTool_Click" Grid.Row="1"/>
-						<TextBox x:Name="JobID" Text="{Binding JobID}" Margin="26.429,35.414,173.429,171.379" FontSize="8" HorizontalAlignment="Center" VerticalAlignment="Center" Width="89" Height="19.319" Background="#FFD1D1D1"/>
-						<Label Content="Job ID" HorizontalAlignment="Left" Margin="3.5,20.281,0,0" VerticalAlignment="Top" Height="20" Width="45" FontSize="8" RenderTransformOrigin="0.894,0.532"/>
-						<Label Content="Accession Number" HorizontalAlignment="Left" Margin="-109.53,183.07,0,0" VerticalAlignment="Top" Height="20" Width="79" FontSize="8"/>
-						<Label Content="Enter Sequence or FASTA:" HorizontalAlignment="Left" Margin="-109.53,2.337,0,0" VerticalAlignment="Top" Height="20.098" Width="106" FontSize="8" Grid.Row="1"/>
-						<Label Content="Query Setup" HorizontalAlignment="Left" Margin="5.752,-0.5,0,0" VerticalAlignment="Top" Height="25.5" Width="96.5" FontFamily="Arial Black" FontSize="9.333"/>
-						<TextBox x:Name="SeqOrFASTA" Text="{Binding SequenceOrFASTAInput}" Margin="-104.506,22.379,21.535,134.751" TextWrapping="Wrap" FontSize="8" HorizontalAlignment="Center" VerticalAlignment="Center" Height="183.758" Width="371.829" IsEnabled="True" UndoLimit="1000" AcceptsReturn="True" Grid.Row="1">
-							<TextBox.Background>
-								<SolidColorBrush Color="#FFDEDEDE"/>
-							</TextBox.Background>
-						</TextBox>
-						<TextBox x:Name="AccessionNumber_Copy" Text="{Binding Name}" Margin="15.024,203.07,71.782,2.663" FontSize="8" VerticalAlignment="Center" HorizontalAlignment="Center" Width="202.052" Height="20.267" Background="#FFDEDEDE"/>
-						<Label Content="Name of Sequence" HorizontalAlignment="Left" Margin="10,183.07,0,0" VerticalAlignment="Top" Height="20" Width="79" FontSize="8"/>
-						<CheckBox x:Name="BadSequenceData" Content="" IsChecked="{Binding BadSequence}" Checked="BadSequenceData_Checked" Unchecked="BadSequenceData_Checked" HorizontalAlignment="Left" Margin="-104.506,191.094,0,0" Grid.Row="1" VerticalAlignment="Top" Visibility="Hidden">
-							
-						</CheckBox>
-						<ComboBox x:Name="DataBaseDropdown" Margin="-104.506,162.43,297.183,41.61" >
-							<ComboBox.Background>
-								<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
-									<GradientStop Color="#FFF0F0F0" Offset="0"/>
-									<GradientStop Color="#FFDEDEDE" Offset="1"/>
-								</LinearGradientBrush>
-							</ComboBox.Background>
-						
-
-						</ComboBox>
-						<Label Content="Choose Database" HorizontalAlignment="Left" Margin="-109.53,142.43,0,0" VerticalAlignment="Top" Height="20" Width="79" FontSize="8"/>
-						<TextBlock HorizontalAlignment="Stretch" Height="Auto"  Margin="242.136,27.331,38.92,55.029" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center"/>					</Grid>
 
 
-					<Grid x:Name="Results" Height="754.462" Canvas.Left="10" Width="1225.074" RenderTransformOrigin="0.5,0.5" Canvas.Top="15.851" HorizontalAlignment="Left" VerticalAlignment="Center">
-						<ScrollViewer x:Name="DataGridScroller" HorizontalAlignment="Left"  CanContentScroll="True" VerticalScrollBarVisibility="Auto" Background="Black" Width="Auto" HorizontalScrollBarVisibility="Visible" VerticalAlignment="Top" Height="693.738" Margin="0,50.724,0,0">
-						
-							<Grid x:Name="DataGridWrapper" Height="675.989" Width="10.485" HorizontalAlignment="Left" VerticalAlignment="Top">
-								<Grid x:Name="GraphGrid"   Width="Auto" Margin="10,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="652.632"/>
-								<Grid x:Name="DataGrid" Height="100" Width="Auto" Margin="10,533.281,0,0" HorizontalAlignment="Left" MouseDown="MouseDownSequence_Clicked" VerticalAlignment="Top"/>
-								<Grid x:Name="ChouFasmanGrid" HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="10.485" Margin="0,258.479,0,0"/>
-                        
-							</Grid>
-                        
-						</ScrollViewer>
-                    <Button x:Name="Reset" Content="Reset" Click="Reset_Clicked"  HorizontalAlignment="Left" Width="75" Background="#FF1EB80F" VerticalAlignment="Top" Margin="0,-24.96,0,0"/>
-						<Grid x:Name="Results_Title"  Margin="90,-21.249,0,0" Width="Auto" VerticalAlignment="Top" HorizontalAlignment="Left">
-							<TextBlock x:Name="Sequence_Name" Text="{Binding Name}" Margin="98.015,-5.434,29.155,30.521" Foreground="#FF1EB80F" FontSize="16" FontWeight="Bold"/>
-						</Grid>
-						<Grid x:Name="DataManipulationGrid" Margin="77.664,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="215.124">
-							<Expander Header="Chou-Fasman Settings" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#FFB3B3B3" FontWeight="Bold" Margin="189.774,-1.219,0,0" Height="119.86" IsExpanded="True">
-								<Grid Height="120.757" >
-									<Grid x:Name="Chou_Fasman_Settings" Margin="10,0,-2.165,24.434" >
-										<Rectangle Fill="#FFB3B3B3" HorizontalAlignment="Left"  RadiusY="10" RadiusX="10" Stroke="Black" StrokeThickness="0" VerticalAlignment="Top" Width="140.664" Height="90.084" Margin="0,2.689,0,0" />
-										<Label Content="Show Data" HorizontalAlignment="Left" Margin="28.294,-0.011,0,0" VerticalAlignment="Top"/>
-										<Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="69.118" Margin="17.342,19.843,0,0" VerticalAlignment="Top" Width="104.888" CornerRadius="10"/>
-										<RadioButton x:Name="Alpha_Helix" Content="Alpha-Helix" HorizontalAlignment="Left" Margin="20.772,23.132,0,0" VerticalAlignment="Top" />
-										<RadioButton x:Name="Beta_Sheet" Content="Beta-Sheet" HorizontalAlignment="Left" Margin="20.772,38.092,0,0" VerticalAlignment="Top"/>
-										<RadioButton x:Name="Loop_Coil" Content="Loop-Coil" HorizontalAlignment="Left" Margin="20.772,53.052,0,0" VerticalAlignment="Top"/>
-										<RadioButton x:Name="Show_All" Content="All" HorizontalAlignment="Left" Margin="20.772,68.012,0,0" VerticalAlignment="Top"/>
-									</Grid>
-								</Grid>
-							</Expander>
-							<Expander Header="Hydropathy Plot Settings" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#FFB3B3B3" IsExpanded="True" FontWeight="Bold" Height="206.335" Width="261.076" Margin="-76.302,-1.219,0,0">
-								<Grid  Width="266.162">
-									<Grid x:Name="Hydropathy_Plot_Settings" Margin="10,5.538,-67.111,-14.016">
-										<Rectangle Fill="#FFB3B3B3" HorizontalAlignment="Left" Height="178.797" RadiusY="10" RadiusX="10" Stroke="Black" StrokeThickness="0" VerticalAlignment="Top" Width="246.885"/>
-										<Grid x:Name="ScaleGrid" Margin="13.524,-4.653,132.269,135.425">
-											<Label Content="Scale" HorizontalAlignment="Left" Margin="5.083,0,0,35.853" Width="40.067"/>
-											<Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="41.368" Margin="0,19.85,0,0" VerticalAlignment="Top" Width="110.584" CornerRadius="10"/>
-											<RadioButton x:Name="Kyte_Doolittle" Content="Kyte-Doolittle" HorizontalAlignment="Left" Margin="8.035,25.859,0,0" VerticalAlignment="Top" Checked="KyteDoolittle_Checked"/>
-											<RadioButton x:Name="Hopp_Woods" Content="Hopp-Woods" HorizontalAlignment="Left" Margin="8.035,40.819,0,0" VerticalAlignment="Top" Checked="HoppWoods_Checked"/>
-										</Grid>
-										<Grid x:Name="TypeGrid" Margin="13.524,56.388,10,13.016">
-											<Grid.ColumnDefinitions>
-												<ColumnDefinition Width="167*"/>
-												<ColumnDefinition Width="51*"/>
-											</Grid.ColumnDefinitions>
-											<Label Content="Type" HorizontalAlignment="Left" Margin="5.083,0,0,0"/>
-											<Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="97.146" Margin="0,19.85,0,0" VerticalAlignment="Top" Width="229.624" CornerRadius="10"/>
-											<RadioButton x:Name="TransMembrane" Content="TransMembrane (Window Size 19)" HorizontalAlignment="Left" Margin="8.035,25.859,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Checked="TransMembraneOnly_Checked"/>
-											<RadioButton x:Name="SurfaceRegion" Content="Surface Region (Window Size 9)" HorizontalAlignment="Left" Margin="8.035,40.819,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Checked="SurfaceRegionOnly_Checked"/>
-											<RadioButton x:Name="SurfaceRegion_TransMembrane" Content="Both Transmembrane and Surface" HorizontalAlignment="Left" Margin="8.035,55.779,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Checked="TransMemAndSurface_Checked"/>
-											<RadioButton x:Name="CustomWindow" Content="Custom Window" HorizontalAlignment="Left" Margin="8.035,70.739,0,0" VerticalAlignment="Top" Checked="CustomWindow_Checked"/>
-											<RadioButton x:Name="ShowAllHydroPlots" Content="Show All" HorizontalAlignment="Left" Margin="8.035,85.699,0,0" VerticalAlignment="Top" Checked="ShowAllHydroPlots_Checked"/>
-											<RadioButton x:Name="HideAllHydroPlots" Content="Hide All" HorizontalAlignment="Left" Margin="8.035,99.96,0,0" VerticalAlignment="Top" Checked="HideAllHydroPlots_Checked"/>
-										</Grid>
-										<Grid x:Name="HydroWindowSize" Margin="133.115,21.106,0,116.997" HorizontalAlignment="Left" Width="113.77">
-											<Grid.ColumnDefinitions>
-												<ColumnDefinition Width="67*"/>
-												<ColumnDefinition Width="51*"/>
-											</Grid.ColumnDefinitions>
-											<Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="57.697" Margin="-3.71,-6.011,0,0" VerticalAlignment="Top" Width="110.584" CornerRadius="10" Grid.ColumnSpan="2"/>
-											<Button x:Name="CustomWindowButton" Content="Create" HorizontalAlignment="Left" VerticalAlignment="Top" Width="54.822" Margin="26.618,27.782,0,0" Background="#FF1EB80F" Click="CreateCustomWindow_Clicked" Grid.ColumnSpan="2" />
-											<TextBlock Margin="0,-6.011,37.538,25.928" TextWrapping="Wrap" Foreground="Black" Grid.ColumnSpan="2"><Run Text="Custom "/><LineBreak/><Run Text="Window Size"/></TextBlock>
-											<TextBox x:Name="HydropathyWindowSize" HorizontalAlignment="Left" Height="20.665" Margin="76.232,2.117,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="28.146" Grid.ColumnSpan="2"/>
-										</Grid>
-									</Grid>
-								</Grid>
-							</Expander>
-						</Grid>
-                        
-					</Grid>
+    <Viewbox x:Name="PrimaryView" Stretch="Uniform" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left" Margin="10,10,0,-2.856" Width="1204">
+        <Viewbox.RenderTransform>
+            <TransformGroup>
+                <ScaleTransform/>
+                <SkewTransform/>
+                <RotateTransform/>
+                <TranslateTransform/>
+            </TransformGroup>
+        </Viewbox.RenderTransform>
+        <Canvas RenderTransformOrigin="0.5,0.5" Height="780.313" Width="1229.869" HorizontalAlignment="Left" >
+            <Canvas.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Canvas.RenderTransform>
+            <Grid x:Name="Title"  Background="#FF1EB80F" Height="712.151" Width="200" HorizontalAlignment="Left" RenderTransformOrigin="0.5,0.5" Canvas.Top="15.851">
+                <Grid.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Grid.RenderTransform>
+                <TextBlock Text="Secondary Structure Analysis Tool" TextWrapping="Wrap" Margin="20,10,0,199" FontWeight="Bold" FontFamily="Showcard Gothic" FontSize="21.333"/>
+                <TextBlock Text="Written By: Clinton Walker" FontSize="8" Margin="10,0,0,17" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                <TextBlock Text="Bioinformatics Final Project 2015" FontSize="8" Margin="10,0,0,6.36" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
+                <TextBlock Text="Ver: 1.0" FontSize="8" Margin="168.065,0,0,6.36" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
 
-				</Canvas>
-			</Viewbox>
+            </Grid>
+            <Grid x:Name="Setup" Height="567" Canvas.Left="213.645" Width="288.858" HorizontalAlignment="Left" RenderTransformOrigin="0.5,0.5" DataContext="" Canvas.Top="148.108" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="226*"/>
+                    <RowDefinition Height="341*"/>
+                </Grid.RowDefinitions>
+                <Grid.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Grid.RenderTransform>
+                <Rectangle HorizontalAlignment="Left" Height="369.848" Stroke="Black" VerticalAlignment="Top" Width="280.858" Margin="-114.029,107.5,0,0" StrokeThickness="0" RadiusX="10" RadiusY="12" Grid.RowSpan="2">
+                    <Rectangle.Fill>
+                        <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveBorderColorKey}}"/>
+                    </Rectangle.Fill>
+                </Rectangle>
+                <Rectangle HorizontalAlignment="Left" Height="477.348" Stroke="Black" VerticalAlignment="Top" Width="280.858" Margin="-3.53,0,0,0" StrokeThickness="0" Fill="#FFB3B3B3" RadiusX="10" RadiusY="10" Grid.RowSpan="2"/>
+                <TextBox x:Name="AccessionNumber" Text="{Binding AccessionNumber}" Margin="-104.506,203.07,304.364,2.663" FontSize="8" VerticalAlignment="Center" HorizontalAlignment="Center" Width="89" Height="20.267" Background="#FFDEDEDE"/>
+                <Button x:Name="Submit" Content="Submit" HorizontalAlignment="Left" Margin="208.273,211.137,0,0" VerticalAlignment="Top" Width="49" Height="20" Background="#FF1EB80F" FontFamily="Arial Black" FontSize="10.667" FontWeight="Bold" Click="StartAnalysisTool_Click" Grid.Row="1"/>
+                <TextBox x:Name="JobID" Text="{Binding JobID}" Margin="26.429,35.414,173.429,171.379" FontSize="8" HorizontalAlignment="Center" VerticalAlignment="Center" Width="89" Height="19.319" Background="#FFD1D1D1"/>
+                <Label Content="Job ID" HorizontalAlignment="Left" Margin="3.5,20.281,0,0" VerticalAlignment="Top" Height="20" Width="45" FontSize="8" RenderTransformOrigin="0.894,0.532"/>
+                <Label Content="Accession Number" HorizontalAlignment="Left" Margin="-109.53,183.07,0,0" VerticalAlignment="Top" Height="20" Width="79" FontSize="8"/>
+                <Label Content="Enter Sequence or FASTA:" HorizontalAlignment="Left" Margin="-109.53,2.337,0,0" VerticalAlignment="Top" Height="20.098" Width="106" FontSize="8" Grid.Row="1"/>
+                <Label Content="Query Setup" HorizontalAlignment="Left" Margin="5.752,-0.5,0,0" VerticalAlignment="Top" Height="25.5" Width="96.5" FontFamily="Arial Black" FontSize="9.333"/>
+                <TextBox x:Name="SeqOrFASTA" Text="{Binding SequenceOrFASTAInput}" Margin="-104.506,22.379,21.535,134.751" TextWrapping="Wrap" FontSize="8" HorizontalAlignment="Center" VerticalAlignment="Center" Height="183.758" Width="371.829" IsEnabled="True" UndoLimit="1000" AcceptsReturn="True" Grid.Row="1">
+                    <TextBox.Background>
+                        <SolidColorBrush Color="#FFDEDEDE"/>
+                    </TextBox.Background>
+                </TextBox>
+                <TextBox x:Name="AccessionNumber_Copy" Text="{Binding Name}" Margin="15.024,203.07,71.782,2.663" FontSize="8" VerticalAlignment="Center" HorizontalAlignment="Center" Width="202.052" Height="20.267" Background="#FFDEDEDE"/>
+                <Label Content="Name of Sequence" HorizontalAlignment="Left" Margin="10,183.07,0,0" VerticalAlignment="Top" Height="20" Width="79" FontSize="8"/>
+                <CheckBox x:Name="BadSequenceData" Content="" IsChecked="{Binding BadSequence}" Checked="BadSequenceData_Checked" Unchecked="BadSequenceData_Checked" HorizontalAlignment="Left" Margin="-104.506,191.094,0,0" Grid.Row="1" VerticalAlignment="Top" Visibility="Hidden">
+
+                </CheckBox>
+                <ComboBox x:Name="DataBaseDropdown" Margin="-104.506,162.43,297.183,41.61" >
+                    <ComboBox.Background>
+                        <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                            <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                            <GradientStop Color="#FFDEDEDE" Offset="1"/>
+                        </LinearGradientBrush>
+                    </ComboBox.Background>
+
+
+                </ComboBox>
+                <Label Content="Choose Database" HorizontalAlignment="Left" Margin="-109.53,142.43,0,0" VerticalAlignment="Top" Height="20" Width="79" FontSize="8"/>
+                <TextBlock HorizontalAlignment="Stretch" Height="Auto"  Margin="242.136,27.331,38.92,55.029" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center"/>
+            </Grid>
+
+
+            <Grid x:Name="Results" Height="754.462" Canvas.Left="10" Width="1225.074" RenderTransformOrigin="0.5,0.5" Canvas.Top="15.851" HorizontalAlignment="Left" VerticalAlignment="Center" Visibility="Hidden">
+                <ScrollViewer x:Name="DataGridScroller" HorizontalAlignment="Left"  CanContentScroll="True" VerticalScrollBarVisibility="Auto" Background="Black" Width="Auto" HorizontalScrollBarVisibility="Visible" VerticalAlignment="Top" Height="693.738" Margin="0,50.724,0,0">
+
+                    <Grid x:Name="DataGridWrapper" Height="675.989" Width="10.485" HorizontalAlignment="Left" VerticalAlignment="Top">
+                        <Grid x:Name="GraphGrid"   Width="Auto" Margin="10,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="652.632"/>
+                        <Grid x:Name="DataGrid" Height="100" Width="Auto" Margin="10,533.281,0,0" HorizontalAlignment="Left" MouseDown="MouseDownSequence_Clicked" VerticalAlignment="Top"/>
+                        <Grid x:Name="ChouFasmanGrid" HorizontalAlignment="Left" Height="102.27" VerticalAlignment="Top" Width="0.485" Margin="10,394.479,0,0"/>
+
+                    </Grid>
+
+                </ScrollViewer>
+                <Button x:Name="Reset" Content="Reset" Click="Reset_Clicked"  HorizontalAlignment="Left" Width="75" Background="#FF1EB80F" VerticalAlignment="Top" Margin="0,-24.96,0,0"/>
+                <Grid x:Name="Results_Title"  Margin="90,-21.249,0,0" Width="Auto" VerticalAlignment="Top" HorizontalAlignment="Left">
+                    <TextBlock x:Name="Sequence_Name" Text="{Binding Name}" Margin="98.015,-5.434,29.155,30.521" Foreground="#FF1EB80F" FontSize="16" FontWeight="Bold"/>
+                </Grid>
+                <Grid x:Name="DataManipulationGrid" Margin="77.059,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="215.124" Width="567.841">
+                    <Expander Header="Chou-Fasman Settings" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#FFB3B3B3" FontWeight="Bold" Margin="189.774,-1.219,0,0" Height="159.486">
+                        <Grid Height="139.002" >
+                            <Grid x:Name="Chou_Fasman_Settings" Margin="10,0,-2.165,22" >
+                                <Rectangle Fill="#FFB3B3B3" HorizontalAlignment="Left"  RadiusY="10" RadiusX="10" Stroke="Black" StrokeThickness="0" VerticalAlignment="Top" Width="140.664" Height="109.192" Margin="0,4.023,0,0" />
+                                <Label Content="Show Data" HorizontalAlignment="Left" Margin="28.294,-0.011,0,0" VerticalAlignment="Top"/>
+                                <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="86.917" Margin="17.342,19.843,0,0" VerticalAlignment="Top" Width="104.888" CornerRadius="10"/>
+                                <RadioButton x:Name="AlphaHelix" Content="Alpha-Helix" HorizontalAlignment="Left" Margin="20.772,23.132,0,0" VerticalAlignment="Top" Checked="AlphaHelix_Checked"/>
+                                <RadioButton x:Name="BetaSheet" Content="Beta-Sheet" HorizontalAlignment="Left" Margin="20.772,38.092,0,0" VerticalAlignment="Top" Checked="BetaSheet_Checked"/>
+                                <RadioButton x:Name="LoopCoil" Content="Loop-Coil" HorizontalAlignment="Left" Margin="20.772,53.052,0,0" VerticalAlignment="Top" Checked="LoopCoil_Checked" Visibility="Collapsed"/>
+                                <RadioButton x:Name="ChouFasmanShow_All" Content="All" HorizontalAlignment="Left" Margin="20.772,68.012,0,0" VerticalAlignment="Top"
+                                                     Checked="ChouFasmanShow_All_Checked"/>
+                                <RadioButton x:Name="ChouFasmanHide_All" Content="Hide All" HorizontalAlignment="Left" Margin="20.772,82.972,0,0" VerticalAlignment="Top"
+                                	Checked="ChouFasmanHide_All_Checked"/>
+                            </Grid>
+                        </Grid>
+                    </Expander>
+                    <Expander Header="Hydropathy Plot Settings" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#FFB3B3B3" FontWeight="Bold" Height="206.335" Width="261.076" Margin="-76.302,-1.219,0,0">
+                        <Grid  Width="266.162">
+                            <Grid x:Name="Hydropathy_Plot_Settings" Margin="10,5.538,0,-14.016">
+                                <Rectangle Fill="#FFB3B3B3" HorizontalAlignment="Left" Height="178.797" RadiusY="10" RadiusX="10" Stroke="Black" StrokeThickness="0" VerticalAlignment="Top" Width="246.885"/>
+                                <Grid x:Name="ScaleGrid" Margin="13.524,-4.653,132.269,135.425">
+                                    <Label Content="Scale" HorizontalAlignment="Left" Margin="5.083,0,0,35.853" Width="40.067"/>
+                                    <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="41.368" Margin="0,19.85,0,0" VerticalAlignment="Top" Width="110.584" CornerRadius="10"/>
+                                    <RadioButton x:Name="Kyte_Doolittle" Content="Kyte-Doolittle" HorizontalAlignment="Left" Margin="8.035,25.859,0,0" VerticalAlignment="Top" Checked="KyteDoolittle_Checked"/>
+                                    <RadioButton x:Name="Hopp_Woods" Content="Hopp-Woods" HorizontalAlignment="Left" Margin="8.035,40.819,0,0" VerticalAlignment="Top" Checked="HoppWoods_Checked"/>
+                                    <Label Content="Custom Window" HorizontalAlignment="Left" Margin="120.705,0,-120.649,35.853" Width="110.313"/>
+                                </Grid>
+                                <Grid x:Name="TypeGrid" Margin="13.524,56.388,86.297,18.84" >
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="167*"/>
+                                        <ColumnDefinition Width="51*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Content="Type" HorizontalAlignment="Left" Margin="5.083,0,0,0"/>
+                                    <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="97.146" Margin="0,19.85,-68.951,-0.411" VerticalAlignment="Top" Width="225.292" CornerRadius="10" Grid.ColumnSpan="2"/>
+                                    <RadioButton x:Name="TransMembrane" Content="TransMembrane (Window Size 19)" HorizontalAlignment="Left" Margin="8.035,25.859,-68.951,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Checked="TransMembraneOnly_Checked" Width="217.257"/>
+                                    <RadioButton x:Name="SurfaceRegion" Content="Surface Region (Window Size 9)" HorizontalAlignment="Left" Margin="8.035,40.819,-68.951,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Checked="SurfaceRegionOnly_Checked" Width="217.257"/>
+                                    <RadioButton x:Name="SurfaceRegion_TransMembrane" Content="Both Transmembrane and Surface" HorizontalAlignment="Left" Margin="8.035,55.779,-68.951,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Checked="TransMemAndSurface_Checked" Width="217.257"/>
+                                    <RadioButton x:Name="CustomWindow" Content="Custom Window" HorizontalAlignment="Left" Margin="8.035,70.739,-63.83,0" VerticalAlignment="Top" Checked="CustomWindow_Checked" Grid.ColumnSpan="2" Width="212.136"/>
+                                    <RadioButton x:Name="ShowAllHydroPlots" Content="Show All" HorizontalAlignment="Left" Margin="8.035,85.699,0,0" VerticalAlignment="Top" Checked="ShowAllHydroPlots_Checked"/>
+                                    <RadioButton x:Name="HideAllHydroPlots" Content="Hide All" HorizontalAlignment="Left" Margin="8.035,99.96,0,0" VerticalAlignment="Top" Checked="HideAllHydroPlots_Checked"/>
+                                </Grid>
+                                <Grid x:Name="HydroWindowSize" Margin="133.115,21.106,0,116.997" HorizontalAlignment="Left" Width="113.77">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="19*"/>
+                                        <RowDefinition Height="5*"/>
+                                        <RowDefinition Height="30*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="0*"/>
+                                        <ColumnDefinition Width="65*"/>
+                                        <ColumnDefinition Width="49*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="57.697" Margin="10,-6.011,0,0" VerticalAlignment="Top" Width="86.063" CornerRadius="10" Grid.ColumnSpan="3" Grid.RowSpan="3"/>
+                                    <Button x:Name="CustomWindowButton" Content="Create" HorizontalAlignment="Left" VerticalAlignment="Top" Width="54.822" Margin="26.618,4.235,0,0" Background="#FF1EB80F" Click="CreateCustomWindow_Clicked" Grid.ColumnSpan="3" Grid.Row="2" />
+                                    <TextBlock Margin="20.484,1.113,14.625,3.118" TextWrapping="Wrap" Foreground="Black" Text="Size:" Grid.RowSpan="2" Grid.ColumnSpan="2"/>
+                                    <TextBox x:Name="HydropathyWindowSize" HorizontalAlignment="Left" Height="19.775" Margin="49.973,0,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="28.146" Grid.ColumnSpan="3" Grid.RowSpan="2"/>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Expander>
+                    <Expander Header="TMHMM Settings" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="361.759,-1.219,0,0" Foreground="#FFADADAD" FontWeight="Bold" Height="194.115" Width="193.082">
+                        <Grid x:Name="TMHMMSettingsGrid" >
+                            <Rectangle Fill="#FFB3B3B3" HorizontalAlignment="Left" Height="164.876" RadiusY="10" RadiusX="10" Stroke="Black" StrokeThickness="0" VerticalAlignment="Top" Width="186.961" Margin="14.866,3.337,-10.745,0"/>
+                            <RadioButton Content="Inner Regions" HorizontalAlignment="Left" Margin="28.186,59.701,0,0" VerticalAlignment="Top" Checked="TMHMMinnerRegions_Checked"/>
+                            <RadioButton Content="Outer Regions" HorizontalAlignment="Left" Margin="28.186,74.661,0,0" VerticalAlignment="Top" Checked="TMHMMouterRegions_Checked"/>
+                            <RadioButton Content="Transmembrane Regions" HorizontalAlignment="Left" Margin="28.186,89.621,0,0" VerticalAlignment="Top" Checked="TMHMMmembrRegions_Checked"/>
+                            <RadioButton x:Name="TMHMMShowAll_RadioButton" Content="Show All" HorizontalAlignment="Left" Margin="28.186,104.581,0,0" VerticalAlignment="Top" Checked="TMHMMshowAll_Checked"/>
+                            <RadioButton Content="Hide All" HorizontalAlignment="Left" Margin="28.186,119.541,0,0" VerticalAlignment="Top" Checked="TMHMMhideAll_Checked"/>
+                            <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="81.18" VerticalAlignment="Top" Width="171.082" Margin="23.34,54.44,-3.34,0" CornerRadius="10"/>
+                            <Button Content="Delete" Background="#FFEA1212" FontWeight="Bold" Margin="119.422,140.62,-3.34,10.535" Click="TMHMMDeleteJobButton_Clicked"/>
+                            <ComboBox x:Name="TMHMMJobSelectionComboBox" HorizontalAlignment="Left" Margin="31.568,24.821,0,0" VerticalAlignment="Top" Width="149.514" SelectionChanged="TMHMMJobSelectionComboBoxSelection_Changed" />
+                            <Label Content="Select TMHMM Job" HorizontalAlignment="Left" Margin="18.145,3.337,0,0" VerticalAlignment="Top"/>
+                        </Grid>
+                    </Expander>
+                </Grid>
+                <Grid x:Name="TMHMMGrid" HorizontalAlignment="Left" Height="110.177" VerticalAlignment="Top" Width="138.294" Margin="12.271,209.39,0,0" Visibility="Hidden">
+                    <Label Content="TMHMM Setup" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#FFB3B3B3" FontWeight="Bold" Margin="0,-4.879,0,0"/>
+                    <Rectangle Fill="#FFB3B3B3" HorizontalAlignment="Left" Height="89.096" RadiusY="10" RadiusX="10" Stroke="Black" StrokeThickness="0" VerticalAlignment="Top" Width="158.779" Margin="0,21.081,-20.485,0"/>
+                    <Button x:Name="StartTmhmm_Button" Content="Start" HorizontalAlignment="Left" Margin="29.608,80.217,0,0" VerticalAlignment="Top" Width="75" Background="#FF1EB80F" FontWeight="Bold" Click="StartTMHMMButton_Clicked"/>
+                    <Label Content="Sequence Size" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="6.238,18.412,0,0" FontWeight="Bold"/>
+                    <Label x:Name="seqLengthTmhmm" Content="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="98.238,18.412,0,0" FontWeight="Bold" Width="46.536"/>
+                    <Grid x:Name="TMHMMDataGrid" HorizontalAlignment="Left" Height="426" VerticalAlignment="Top" Width="370" Margin="165.172,42.127,-396.878,-357.95" Visibility="Hidden">
+                        <Rectangle Fill="#FFB3B3B3" HorizontalAlignment="Left" Height="504.601" RadiusY="10" RadiusX="10" Stroke="Black" StrokeThickness="0" VerticalAlignment="Top" Width="362.539" Margin="0,-20.888,0,-57.713"/>
+                        <Button x:Name="SubmitTMHMMDataButton" Content="Submit" HorizontalAlignment="Left" Margin="250.936,440.684,0,-34.644" VerticalAlignment="Top" Width="75" FontWeight="Bold" Background="#FF20B512" Click="TMHMMSubmitButton_Clicked"/>
+                        <Button x:Name="Cancel_TMHMM" Content="Cancel" HorizontalAlignment="Left" Margin="30.727,440.684,0,-34.644" VerticalAlignment="Top" Width="75" FontWeight="Bold" Background="#FFF01D1D" Click="TMHMMCancelButton_Clicked"/>
+                        <Label Content="Selected Sequence:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="23.46,17.456,0,0" FontWeight="Bold"/>
+                        <TextBox x:Name="TMHMMSequenceTextBox" HorizontalAlignment="Left" Height="123.029" Margin="30.727,48.416,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="295.209"/>
+                        <Label Content="Paste Data Here:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="23.46,179.815,0,0" FontWeight="Bold" Height="24.892"/>
+                        <TextBox x:Name="TMHMMDataTextBox" HorizontalAlignment="Left" Height="225.977" Margin="30.727,209.707,0,-9.684" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="295.209" AcceptsReturn="True"/>
+                        <Label Content="TMHMM Interface Window" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="23.46,-8.504,0,0" FontWeight="Bold"/>
+                        <Button x:Name="TMHMMHelpButton" Content="Help" HorizontalAlignment="Left" Margin="261.178,-5.504,0,0" VerticalAlignment="Top" Width="75" Background="#FF1EB80F" Click="TMHMMHelpButton_Clicked"/>
+                    </Grid>
+                    <Label Content="Job ID" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="6.238,38.127,0,0" FontWeight="Bold"/>
+                    <TextBox x:Name="TMHMMJobIDTextBox" HorizontalAlignment="Left" Height="17.879" Margin="52.318,42.127,0,0" TextWrapping="Wrap" Text="Job 1" VerticalAlignment="Top" Width="70.976"/>
+                </Grid>
+                <Grid x:Name="webWindow" HorizontalAlignment="Left" Height="734.462" VerticalAlignment="Top" Width="600.296" Margin="614.778,10,0,0" Visibility="Collapsed">
+                    <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top">Outside area of frame</TextBlock>
+
+                    <Button x:Name="CloseWebWindowButton" Content="Hide Window" HorizontalAlignment="Left" VerticalAlignment="Top" Width="102.423" Background="#FFF01D1D"/>
+
+                </Grid>
+
+            </Grid>
+
+        </Canvas>
+    </Viewbox>
 </Window>

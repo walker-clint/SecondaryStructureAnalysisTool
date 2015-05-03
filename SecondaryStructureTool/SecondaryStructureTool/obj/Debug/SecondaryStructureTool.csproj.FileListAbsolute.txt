@@ -42,3 +42,5 @@ C:\Users\Clint\Documents\GitHub\SecondaryStructureAnalysisTool\SecondaryStructur
 C:\Users\Clint\Documents\GitHub\SecondaryStructureAnalysisTool\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\SecondaryStructureTool.Properties.Resources.resources
 C:\Users\Clint\Documents\GitHub\SecondaryStructureAnalysisTool\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\SecondaryStructureTool.csproj.GenerateResource.Cache
 C:\Users\Clinton\Documents\GitHub\SecondaryStructureAnalysisTool\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\SecondaryStructureTool.csprojResolveAssemblyReference.cache
+C:\Users\Clinton\Documents\GitHub\SecondaryStructureAnalysisTool\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\PopUp.baml
+C:\Users\Clinton\Documents\GitHub\SecondaryStructureAnalysisTool\SecondaryStructureTool\SecondaryStructureTool\obj\Debug\PopUp.g.cs

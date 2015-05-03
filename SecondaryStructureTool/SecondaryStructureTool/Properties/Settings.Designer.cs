@@ -26,16 +26,6 @@ namespace SecondaryStructureTool.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://wss.cbs.dtu.dk:80/cgi-bin/soap/ws/quasi.fcgi")]
-        public string SecondaryStructureTool_dk_dtu_cbs_www_WSTMHMM_2_0_ws1 {
-            get {
-                return ((string)(this["SecondaryStructureTool_dk_dtu_cbs_www_WSTMHMM_2_0_ws1"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
         [global::System.Configuration.DefaultSettingValueAttribute("http://www.ebi.ac.uk/Tools/services/soap/emboss_pepstats")]
         public string SecondaryStructureTool_uk_ac_ebi_www_JDispatcherService {
             get {
@@ -60,6 +50,16 @@ namespace SecondaryStructureTool.Properties {
         public string SecondaryStructureTool_uk_ac_ebi_www_fetch_WSDBFetchServerService {
             get {
                 return ((string)(this["SecondaryStructureTool_uk_ac_ebi_www_fetch_WSDBFetchServerService"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://wss.cbs.dtu.dk:80/cgi-bin/soap/ws/quasi.fcgi")]
+        public string SecondaryStructureTool_dk_dtu_cbs_www_WSTMHMM_2_0_ws1 {
+            get {
+                return ((string)(this["SecondaryStructureTool_dk_dtu_cbs_www_WSTMHMM_2_0_ws1"]));
             }
         }
     }

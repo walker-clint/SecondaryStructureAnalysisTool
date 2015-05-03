@@ -66,6 +66,9 @@
     <Compile Include="DataModel\QueryNCBIDatabase.cs" />
     <Compile Include="DataModel\SetupData.cs" />
     <Compile Include="DataModel\TMHMM.cs" />
+    <Compile Include="PopUp.xaml.cs">
+      <DependentUpon>PopUp.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Web References\dk.dtu.cbs.www\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -98,6 +101,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="PopUp.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

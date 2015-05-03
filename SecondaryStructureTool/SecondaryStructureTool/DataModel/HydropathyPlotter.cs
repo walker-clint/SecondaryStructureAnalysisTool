@@ -261,7 +261,7 @@ namespace SecondaryStructureTool.DataModel
 
         /// <summary>
         /// To use INotify Property changed for databinding to the GUI
-        /// reference: using System.ComponentModel;
+        /// reference: using System.ComponentModel; and using System.Runtime.CompilerServices;
         /// add attribute ClassName : INotifyPropertyChanged
         /// copy Events and Event Method Regions into your class
         /// set up all private variables to be bound to GUI with a property:
@@ -269,7 +269,7 @@ namespace SecondaryStructureTool.DataModel
         ///     {
         ///         get { return variableFieldName; }
         ///         set { 
-        ///             variableFieldName = value.ToUpper();
+        ///             variableFieldName = value;
         ///             NotifyPropertyChanged("VariablePropertyName");
         ///         }
         ///     }

@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using SecondaryStructureTool.DataModel;
-
+using System.Collections;
 
 
 namespace SecondaryStructureTool
@@ -30,11 +30,24 @@ namespace SecondaryStructureTool
         private Button selectedResidueButton;
         private SetupData setupData;
         private HydropathyPlotter hydroPlotter;
+        private Chou_Fasman chou_FasmanPlotter;
+        private Frame FrameWithinGrid;
+        private TMHMM newTMHMMJob;
+        private int tMHMMJobNumberCounter = 0;
+        private int TMHMMcurrentJobIndex = 0;
+        private ArrayList TMHMMJobList = new ArrayList();
         private double height, width;
         private bool CustomWindowActive = false;
         private int ScaleFactor = 5;
         private int transMem = 19;
         private int surfMem = 9;
+        private int tMHMMStart = -1; // set to -1 for error detection and to identify it has not been set
+        private Button tMHMMStartButton = null;
+        private int tMHMMStop = -1;  // set to -1 for error detection and to identify it has not been set
+        private Button tMHMMStopButton = null;
+        private Polyline StartMarker = null;
+        private Polyline StopMarker = null;
+        private bool tmhmmActive = false;
         #endregion
 
         #region Constructor
@@ -45,22 +58,7 @@ namespace SecondaryStructureTool
             setupData = new SetupData();
             Setup.DataContext = setupData;
             Results_Title.DataContext = setupData;
-            hydroPlotter = new HydropathyPlotter();
-            height = PrimaryWindow.ActualHeight;
-            width = PrimaryWindow.ActualWidth;
-            selectedResidueButton = new Button();
-            try
-            {
-                setupData.GetDataBases();
-            }
-            catch (Exception e)
-            {
-                //check to see if there is an internet connection and display error
-            }
-            foreach (string db in setupData.Databases)
-            {
-                DataBaseDropdown.Items.Add(db);
-            }
+            InitializeWindow();
         } 
         #endregion
 
@@ -106,35 +104,60 @@ namespace SecondaryStructureTool
             #endregion
 
 
-            ColumnDefinition[] columns = new ColumnDefinition[seqLength * 2];
-            for (int i = 0; i < columns.Length; ++i)
+            #region Column and Row setup
+            ColumnDefinition[] columnsSeq = new ColumnDefinition[seqLength * 2];
+            ColumnDefinition[] columnsChouFasman = new ColumnDefinition[seqLength * 2];
+            for (int i = 0; i < columnsSeq.Length; ++i)
             {
-                columns[i] = new ColumnDefinition();
+                columnsSeq[i] = new ColumnDefinition();
+                columnsChouFasman[i] = new ColumnDefinition();
                 if (i % 2 == 0) // even column is a spacer width 5
                 {
-                    columns[i].Width = new GridLength(5, GridUnitType.Pixel);
+                    columnsSeq[i].Width = new GridLength(5, GridUnitType.Pixel);
+                    columnsChouFasman[i].Width = new GridLength(5, GridUnitType.Pixel);
                 }
                 else // odd column is a data column 30 width
                 {
-                    columns[i].Width = new GridLength(20, GridUnitType.Pixel);
+                    columnsSeq[i].Width = new GridLength(20, GridUnitType.Pixel);
+                    columnsChouFasman[i].Width = new GridLength(20, GridUnitType.Pixel);
                 }
-                DataGrid.ColumnDefinitions.Add(columns[i]);
-                ChouFasmanGrid.ColumnDefinitions.Add(columns[i]);
+                DataGrid.ColumnDefinitions.Add(columnsSeq[i]);
+                ChouFasmanGrid.ColumnDefinitions.Add(columnsChouFasman[i]);
             }
 
-            RowDefinition[] rows = new RowDefinition[3];
-            for (int i = 0; i < rows.Length; ++i)
+            RowDefinition[] rowsSeq = new RowDefinition[2];
+            RowDefinition[] rowsChouFasman = new RowDefinition[5];
+            for (int i = 0; i < rowsSeq.Length; ++i)
             {
-                rows[i] = new RowDefinition();
+                rowsSeq[i] = new RowDefinition();
             }
-            rows[0].Height = new GridLength(20, GridUnitType.Pixel);
-            rows[1].Height = new GridLength(20, GridUnitType.Pixel);
-            rows[2].Height = new GridLength(20, GridUnitType.Pixel);
-            foreach (RowDefinition r in rows)
+            for (int i = 0; i < rowsChouFasman.Length; ++i)
+            {
+                rowsChouFasman[i] = new RowDefinition();
+            }
+            rowsSeq[0].Height = new GridLength(20, GridUnitType.Pixel);
+            rowsSeq[1].Height = new GridLength(20, GridUnitType.Pixel);
+            rowsChouFasman[0].Height = new GridLength(20, GridUnitType.Pixel);
+            rowsChouFasman[1].Height = new GridLength(20, GridUnitType.Pixel);
+            rowsChouFasman[2].Height = new GridLength(20, GridUnitType.Pixel);
+            rowsChouFasman[3].Height = new GridLength(20, GridUnitType.Pixel);
+            rowsChouFasman[4].Height = new GridLength(20, GridUnitType.Pixel);
+            rowsChouFasman[0].Name = "HelixCharRow";
+            rowsChouFasman[1].Name = "HelixDataRow";
+            rowsChouFasman[2].Name = "BetaCharRow";
+            rowsChouFasman[3].Name = "BetaDataRow";
+            rowsChouFasman[4].Name = "CoilLoopRow";
+            foreach (RowDefinition r in rowsSeq)
             {
                 DataGrid.RowDefinitions.Add(r);
-                ChouFasmanGrid.RowDefinitions.Add(r);
             }
+            foreach (RowDefinition r in rowsChouFasman)
+            {
+                ChouFasmanGrid.RowDefinitions.Add(r);
+            } 
+            #endregion
+
+            #region Sequence button creation and number labels
             //DataGrid.ShowGridLines = true;
             Button[] seq = new Button[seqLength];
             TextBlock[] indexNumbers = new TextBlock[seqLength];
@@ -144,6 +167,9 @@ namespace SecondaryStructureTool
                 indexNumbers[i] = new TextBlock();
             }
 
+
+            
+            //create sequence buttons and residue sequence numbers
             for (var i = 0; i < seqLength; ++i)
             {
                 string blockNum = "tBlock_" + i;
@@ -168,7 +194,7 @@ namespace SecondaryStructureTool
                 DataGrid.Children.Add(seq[i]);
 
                 indexNumbers[i].Text = i + "";
-                
+
                 indexNumbers[i].FontSize = 9;
                 indexNumbers[i].TextWrapping = TextWrapping.Wrap;
                 indexNumbers[i].HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
@@ -178,22 +204,233 @@ namespace SecondaryStructureTool
                 indexNumbers[i].SetValue(Grid.RowProperty, 1);
                 indexNumbers[i].SetValue(Grid.ColumnProperty, (colNum));
                 DataGrid.Children.Add(indexNumbers[i]);
+            } 
+            #endregion
+
+            #region Chou Fasman Data
+            //Helix data
+            TextBlock[] HelixNumbers = new TextBlock[seqLength];
+            TextBlock[] HelixChars = new TextBlock[seqLength];
+            for (int i = 0; i < seq.Length; ++i)
+            {
+                HelixNumbers[i] = new TextBlock();
+                HelixChars[i] = new TextBlock();
+            }
+            for (int i = 0; i < seqLength; ++i)
+            {
+                string dataNames = "HelixData_" + i;
+                string charNames = "HelixChar_" + i;
+
+                int colNum = (i * 2) + 1;
+                HelixChars[i].Text = chou_FasmanPlotter.ChouFasmanResultCharAlphaHelix[i] + "";
+                HelixChars[i].FontSize = 12;
+                HelixChars[i].Name = charNames;
+                HelixChars[i].TextWrapping = TextWrapping.Wrap;
+                HelixChars[i].HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+                HelixChars[i].VerticalAlignment = System.Windows.VerticalAlignment.Center;
+                HelixChars[i].Foreground = Brushes.Gold ;
+                HelixChars[i].Background = Brushes.Transparent;
+                HelixChars[i].SetValue(Grid.RowProperty, 0);
+                HelixChars[i].SetValue(Grid.ColumnProperty, (colNum));
+                ChouFasmanGrid.Children.Add(HelixChars[i]);
+                HelixNumbers[i].Text = chou_FasmanPlotter.ChouFasmanResultAlphaHelix[i].ToString("N2");
+                HelixNumbers[i].FontSize = 9;
+                HelixNumbers[i].Name = dataNames;
+                HelixNumbers[i].TextWrapping = TextWrapping.Wrap;
+                HelixNumbers[i].HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+                HelixNumbers[i].VerticalAlignment = System.Windows.VerticalAlignment.Center;
+                HelixNumbers[i].Foreground = Brushes.Gold;
+                HelixNumbers[i].Background = Brushes.Transparent;
+                HelixNumbers[i].SetValue(Grid.RowProperty, 1);
+                HelixNumbers[i].SetValue(Grid.ColumnProperty, (colNum));
+                ChouFasmanGrid.Children.Add(HelixNumbers[i]);
+            } 
+            
+            TextBlock[] BetaNumbers = new TextBlock[seqLength];
+            TextBlock[] BetaChars = new TextBlock[seqLength];
+            for (int i = 0; i < seq.Length; ++i)
+            {
+                BetaNumbers[i] = new TextBlock();
+                BetaChars[i] = new TextBlock();
+            }
+            for (int i = 0; i < seqLength; ++i)
+            {
+                string dataNames = "BetaData_" + i;
+                string charNames = "BetaChar_" + i;
+                int colNum = (i * 2) + 1;
+                BetaChars[i].Text = chou_FasmanPlotter.ChouFasmanResultCharBetaSheet[i] + "";
+                BetaChars[i].FontSize = 12;
+                BetaChars[i].Name = charNames;
+                BetaChars[i].TextWrapping = TextWrapping.Wrap;
+                BetaChars[i].HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+                BetaChars[i].VerticalAlignment = System.Windows.VerticalAlignment.Center;
+                BetaChars[i].Foreground = Brushes.DarkMagenta;
+                BetaChars[i].Background = Brushes.Transparent;
+                BetaChars[i].SetValue(Grid.RowProperty, 2);
+                BetaChars[i].SetValue(Grid.ColumnProperty, (colNum));
+                ChouFasmanGrid.Children.Add(BetaChars[i]);
+                BetaNumbers[i].Text = chou_FasmanPlotter.ChouFasmanResultBetaSheet[i].ToString("N2");
+                BetaNumbers[i].FontSize = 9;
+                BetaNumbers[i].Name = dataNames;
+                BetaNumbers[i].TextWrapping = TextWrapping.Wrap;
+                BetaNumbers[i].HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+                BetaNumbers[i].VerticalAlignment = System.Windows.VerticalAlignment.Center;
+                BetaNumbers[i].Foreground = Brushes.DarkMagenta;
+                BetaNumbers[i].Background = Brushes.Transparent;
+                BetaNumbers[i].SetValue(Grid.RowProperty, 3);
+                BetaNumbers[i].SetValue(Grid.ColumnProperty, (colNum));
+                ChouFasmanGrid.Children.Add(BetaNumbers[i]);
             }
 
-
+            ChouFasmanShow_All.IsChecked = true;
+            #endregion
 
 
         } 
         #endregion
-
         #region Private Methods
-
+        private void InitializeWindow()
+        {
+            hydroPlotter = new HydropathyPlotter();
+            height = PrimaryWindow.ActualHeight;
+            width = PrimaryWindow.ActualWidth;
+            selectedResidueButton = new Button();
+            chou_FasmanPlotter = new Chou_Fasman();
+            try
+            {
+                setupData.GetDataBases();
+            }
+            catch (Exception e)
+            {
+                //check to see if there is an internet connection and display error
+            }
+            foreach (string db in setupData.Databases)
+            {
+                DataBaseDropdown.Items.Add(db);
+            }
+        }
         private void SeqButton_Click(object sender, EventArgs e)
         {
-            
+            if (tMHMMStartButton == null)
+            {
+                tMHMMStartButton = (Button)sender;
+                tMHMMStartButton.Foreground = Brushes.Gold;
+                tMHMMStartButton.Background = Brushes.Green;
+                string name = tMHMMStartButton.Name;
+                string[] tokens = name.Split('_');
+                tMHMMStart = Convert.ToInt32(tokens[1]);
+                GraphGrid.Children.Remove(StartMarker);
+                int startPoint = 15 + (25 * tMHMMStart);
+                StartMarker = new Polyline();
+                StartMarker.StrokeThickness = 2;
+                StartMarker.Stroke = Brushes.Green;
+                Point MarkerStartGreen = new Point(startPoint, 0);
+                Point MarkerStopGreen = new Point(startPoint, 525);
+                StartMarker.Points.Add(MarkerStartGreen);
+                StartMarker.Points.Add(MarkerStopGreen);
+                StartMarker.Visibility = System.Windows.Visibility.Visible;
+                GraphGrid.Children.Add(StartMarker);
+
+            }
+            else if (tMHMMStartButton == (Button)sender)
+            {
+                for (int i = tMHMMStart + 1; i < tMHMMStop; ++i)
+                {
+                    string blockNum = "tBlock_" + i;
+                    Button b = (Button)(LogicalTreeHelper.FindLogicalNode(this.DataGrid, blockNum));
+                    b.Foreground = Brushes.Red;
+                    b.Background = Brushes.Black;
+                }
+                tMHMMStartButton.Foreground = Brushes.Red;
+                tMHMMStartButton.Background = Brushes.Black;
+                tMHMMStart = -1;
+                tMHMMStartButton = null;
+                GraphGrid.Children.Remove(StartMarker);
+                if (tMHMMStopButton != null)
+                {
+                    tMHMMStopButton.Foreground = Brushes.Red;
+                    tMHMMStopButton.Background = Brushes.Black;
+                    tMHMMStop = -1;
+                    tMHMMStopButton = null;
+                    GraphGrid.Children.Remove(StopMarker);
+                }
+                TMHMMGrid.Visibility = System.Windows.Visibility.Hidden;
+            }
+            else if (tMHMMStopButton == null)
+            {
+                tMHMMStopButton = (Button)sender;
+                tMHMMStopButton.Foreground = Brushes.Gold;
+                tMHMMStopButton.Background = Brushes.Red;
+                string name = tMHMMStopButton.Name;
+                string[] tokens = name.Split('_');
+                tMHMMStop = Convert.ToInt32(tokens[1]);
+                GraphGrid.Children.Remove(StopMarker);
+                int stopPoint = 15 + (25 * tMHMMStop);
+                StopMarker = new Polyline();
+                StopMarker.StrokeThickness = 2;
+                StopMarker.Stroke = Brushes.Red;
+                Point MarkerStartRed = new Point(stopPoint, 0);
+                Point MarkerStopRed = new Point(stopPoint, 525);
+                StopMarker.Points.Add(MarkerStartRed);
+                StopMarker.Points.Add(MarkerStopRed);
+                StopMarker.Visibility = System.Windows.Visibility.Visible;
+                GraphGrid.Children.Add(StopMarker);
+            }
+            else if (tMHMMStopButton == (Button)sender)
+            {
+                for (int i = tMHMMStart + 1; i < tMHMMStop; ++i)
+                {
+                    string blockNum = "tBlock_" + i;
+                    Button b = (Button)(LogicalTreeHelper.FindLogicalNode(this.DataGrid, blockNum));
+                    b.Foreground = Brushes.Red;
+                    b.Background = Brushes.Black;
+                }
+                tMHMMStopButton.Foreground = Brushes.Red;
+                tMHMMStopButton.Background = Brushes.Black;
+                tMHMMStop = -1;
+                tMHMMStopButton = null;
+                GraphGrid.Children.Remove(StopMarker);
+                TMHMMGrid.Visibility = System.Windows.Visibility.Hidden;
+            }
+
+            if (tMHMMStartButton != null && tMHMMStopButton != null)
+            {
+                if (tMHMMStop < tMHMMStart)
+                {
+                    //stop button is in front of start button swap buttons and fill in
+                    Button temp = tMHMMStartButton;
+                    tMHMMStartButton = tMHMMStopButton;
+                    tMHMMStopButton = temp;
+                    tMHMMStartButton.Foreground = Brushes.Gold;
+                    tMHMMStartButton.Background = Brushes.Green;
+                    tMHMMStopButton.Foreground = Brushes.Gold;
+                    tMHMMStopButton.Background = Brushes.Red;
+                    int tempInt = tMHMMStart;
+                    tMHMMStart = tMHMMStop;
+                    tMHMMStop = tempInt;
+                    Polyline temp2 = StartMarker;
+                    StartMarker = StopMarker;
+                    StopMarker = temp2;
+                    StartMarker.Stroke = Brushes.Green;
+                    StopMarker.Stroke = Brushes.Red;
+                    
+                }
+                //fill in buttons between start and stop and display popup to run tmhmm
+                int seqLength = tMHMMStop - tMHMMStart;
+                for (int i = tMHMMStart + 1; i < tMHMMStop; ++i)
+                {
+                    string blockNum = "tBlock_" + i;
+                    Button b = (Button)(LogicalTreeHelper.FindLogicalNode(this.DataGrid, blockNum));
+                    b.Foreground = Brushes.Gold;
+                    b.Background = Brushes.LightSlateGray;
+                }
+                TMHMMGrid.Visibility = System.Windows.Visibility.Visible;
+                seqLengthTmhmm.Content = seqLength;
+            }
         }
         private void StartAnalysisTool_Click(object sender, RoutedEventArgs e)
         {
+            InitializeWindow();
             if (setupData.Name == "")
             {
                 if (SeqOrFASTA.Text != "")
@@ -209,15 +446,15 @@ namespace SecondaryStructureTool
                 //start hydropathy plot method
                 hydroPlotter.InitHydroPlotter(setupData.Sequence);
                 //start chou-fasman method
-
+                chou_FasmanPlotter.RunChouFasman(setupData.Sequence);
                 //get TMHMM data
 
                 //run create Grid
                 CreateGrid();
                 DrawHydropathyPlot();
+                
             }
         }
-
         private void ClearGrid()
         {
             if (DataGrid.Children.Count > 0)
@@ -232,9 +469,26 @@ namespace SecondaryStructureTool
                 GraphGrid.ColumnDefinitions.Clear();
                 GraphGrid.RowDefinitions.Clear();
             }
+            if (ChouFasmanGrid.Children.Count > 0)
+            {
+                ChouFasmanGrid.Children.Clear();
+                ChouFasmanGrid.ColumnDefinitions.Clear();
+                ChouFasmanGrid.RowDefinitions.Clear();
+            }
+            tMHMMJobNumberCounter = 0;
+            if (TMHMMJobSelectionComboBox.Items.Count > 0)
+            {
+                for (int i = TMHMMJobSelectionComboBox.Items.Count - 1; i > 0; --i)
+                {
+                    TMHMMJobSelectionComboBox.Items.RemoveAt(i);
+                }
+            }
+            if (TMHMMJobList.Count > 0)
+            {
+                TMHMMJobList.Clear();
+            }
+           
         }
-
-
         private void Reset_Clicked(object sender, RoutedEventArgs e)
         {
             Setup.Visibility = System.Windows.Visibility.Visible;
@@ -244,8 +498,21 @@ namespace SecondaryStructureTool
             setupData.Name = "";
             setupData.Sequence = "";
             ClearGrid();
+            hydroPlotter = null;
+            chou_FasmanPlotter = null;
+            
+            selectedResidueButton = null;
+            newTMHMMJob = null;
+            FrameWithinGrid = null;
+            tMHMMStartButton = null;
+            tMHMMStopButton = null;
+            StartMarker = null;
+            StopMarker = null;
+            tmhmmActive = false;
+            tMHMMStart = -1;
+            tMHMMStop = -1;
+            CustomWindowActive = false;
         }
-
         private void BadSequenceData_Checked(object sender, RoutedEventArgs e)
         {
             if (setupData.BadSequence)
@@ -257,9 +524,77 @@ namespace SecondaryStructureTool
                 SeqOrFASTA.Background = new SolidColorBrush(Color.FromArgb(255, 222, 222, 222));
             }
         }
+        private void UpdateSize(object sender, SizeChangedEventArgs e)
+        {
+            double newWidth = PrimaryWindow.ActualWidth;
+            double newHeight = PrimaryWindow.ActualHeight;
+            double expandVal = 0;
+            double growValR = 0;
+            double growValD = 0;
+            if (setupData.Sequence == "")
+            {
+                if (newWidth > width && width != 0)
+                {
+                    expandVal = newWidth - width;
+                    growValR = Results.ActualWidth;
+                    //growValD = DataGridScroller.ActualWidth;
+                    growValR += expandVal;
+                    //growValD += expandVal;
+                    //DataGridScroller.SetValue(Grid.WidthProperty, growValD);
+                    Results.SetValue(Grid.WidthProperty, growValR);
+                }
+                if (newWidth < width && width != 0)
+                {
+                    expandVal = newWidth - width;
+                    growValR = Results.ActualWidth;
+                    //growValD = DataGridScroller.ActualWidth;
+                    growValR += expandVal;
+                    //growValD += expandVal;
+                    //DataGridScroller.SetValue(Grid.WidthProperty, growValD);
+                    Results.SetValue(Grid.WidthProperty, growValR);
+                }
+            }
+            else
+            {
+                if (newWidth > width && width != 0)
+                {
+                    expandVal = newWidth - width;
+                    growValR = Results.ActualWidth;
+                    growValD = DataGridScroller.ActualWidth;
+                    growValR += expandVal;
+                    growValD += expandVal;
+                    DataGridScroller.SetValue(Grid.WidthProperty, growValD);
+                    Results.SetValue(Grid.WidthProperty, growValR);
+                }
+                if (newWidth < width && width != 0)
+                {
+                    expandVal = newWidth - width;
+                    growValR = Results.ActualWidth;
+                    growValD = DataGridScroller.ActualWidth;
+                    growValR += expandVal;
+                    growValD += expandVal;
+                    DataGridScroller.SetValue(Grid.WidthProperty, growValD);
+                    Results.SetValue(Grid.WidthProperty, growValR);
+                }
+            }
+            width = PrimaryWindow.ActualWidth;
+            height = PrimaryWindow.ActualHeight;
+        }
 
+        /// <summary>
+        /// Catches mouse clicks on sequence buttons to set up TMHMM query
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MouseDownSequence_Clicked(object sender, MouseButtonEventArgs e)
+        {
+            if (tMHMMStart == null)
+            {
 
-        #region Hydropathy
+            }
+        }
+        #endregion
+        #region Hydropathy Conrols
 
         private void DrawHydropathyPlot()
         {
@@ -285,7 +620,7 @@ namespace SecondaryStructureTool
             surfaceRegion_KD.Name = "surfaceRegion_KD";
             firstPoint = true;
             offset = 25 * (surfMem / 2);
-            location = 15 + offset; 
+            location = 15 + offset;
             for (var i = (int)hydroPlotter.SequenceKDSurfaceRegions[0]; i < hydroPlotter.SequenceKDSurfaceRegions[hydroPlotter.SequenceKDSurfaceRegions.Length - 1]; ++i)
             {
                 Point p = new Point(location, 300 - (hydroPlotter.SequenceKDSurfaceRegions[i] * ScaleFactor));
@@ -301,7 +636,7 @@ namespace SecondaryStructureTool
             transMem_HW.Name = "transMem_HW";
             firstPoint = true;
             offset = 25 * (transMem / 2);
-            location = 15 + offset; 
+            location = 15 + offset;
             for (var i = (int)hydroPlotter.SequenceHWTransMembrane[0]; i < hydroPlotter.SequenceHWTransMembrane[hydroPlotter.SequenceHWTransMembrane.Length - 1]; ++i)
             {
                 Point p = new Point(location, 300 - (hydroPlotter.SequenceHWTransMembrane[i] * ScaleFactor));
@@ -382,7 +717,7 @@ namespace SecondaryStructureTool
                 Custom_KD.Name = "customWindow_KD";
                 bool firstPoint = true;
                 int offset = 25 * (windowsize / 2);
-                int location = 15 + offset; 
+                int location = 15 + offset;
                 for (var i = (int)hydroPlotter.SequenceCustomWindowKD[0]; i < hydroPlotter.SequenceCustomWindowKD[hydroPlotter.SequenceCustomWindowKD.Length - 1]; ++i)
                 {
                     Point p = new Point(location, 300 - (hydroPlotter.SequenceCustomWindowKD[i] * ScaleFactor));
@@ -644,7 +979,7 @@ namespace SecondaryStructureTool
                         testLine = (Polyline)child;
                         if (Kyte_Doolittle.IsChecked == true)
                         {
-                            
+
                             if (child.Name == "customWindow_KD")
                             {
                                 testLine.Visibility = System.Windows.Visibility.Visible;
@@ -667,8 +1002,8 @@ namespace SecondaryStructureTool
                         }
                     }
 
-                    
-                    
+
+
                     if (child != null && (child.Name == "transMem_KD" || child.Name == "transMem_HW"))
                     {
                         testLine = (Polyline)child;
@@ -788,44 +1123,601 @@ namespace SecondaryStructureTool
 
 
         #endregion
-
-        private void UpdateSize(object sender, SizeChangedEventArgs e)
+        #region ChouFasman Controls
+        private void AlphaHelix_Checked(object sender, RoutedEventArgs e)
         {
-            double newWidth = PrimaryWindow.ActualWidth;
-            double newHeight = PrimaryWindow.ActualHeight;
-            double expandVal = 0;
-            double growValR = 0;
-            double growValD = 0;
-                       
-            if (newWidth > width && width != 0)
+            TextBlock tb;
+            if (setupData.Sequence != "")
             {
-                expandVal = newWidth - width;
-                growValR = Results.ActualWidth;
-                growValD = DataGridScroller.ActualWidth;
-                growValR += expandVal;
-                growValD += expandVal;
-                DataGridScroller.SetValue(Grid.WidthProperty, growValD);
-                Results.SetValue(Grid.WidthProperty, growValR);
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(this.ChouFasmanGrid); ++i)
+                {
+                    var child = VisualTreeHelper.GetChild(this.ChouFasmanGrid, i) as FrameworkElement;
+                    if (child != null && child.Name.Contains("HelixData_"))
+                    {
+                        tb = (TextBlock)child;
+                        tb.Visibility = System.Windows.Visibility.Visible;
+                    }
+                    if (child != null && child.Name.Contains("HelixChar_"))
+                    {
+                        tb = (TextBlock)child;
+                        tb.Visibility = System.Windows.Visibility.Visible;
+                    }
+                    if (child != null && child.Name.Contains("BetaData_"))
+                    {
+                        tb = (TextBlock)child;
+                        tb.Visibility = System.Windows.Visibility.Collapsed;
+                    }
+                    if (child != null && child.Name.Contains("BetaChar_"))
+                    {
+                        tb = (TextBlock)child;
+                        tb.Visibility = System.Windows.Visibility.Collapsed;
+                    }
+                    //if (child != null && child.Name.Contains("LoopData_"))
+                    //{
+                    //    tb = (TextBlock)child;
+                    //    tb.Visibility = System.Windows.Visibility.Collapsed;
+                    //}
+                }
             }
-            if (newWidth < width && width != 0)
-            { 
-                expandVal = newWidth - width;
-                growValR = Results.ActualWidth;
-                growValD = DataGridScroller.ActualWidth;
-                growValR += expandVal;
-                growValD += expandVal;
-                DataGridScroller.SetValue(Grid.WidthProperty, growValD);
-                Results.SetValue(Grid.WidthProperty, growValR);
+        }
+
+        private void BetaSheet_Checked(object sender, RoutedEventArgs e)
+        {
+            TextBlock tb;
+            if (setupData.Sequence != "")
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(this.ChouFasmanGrid); ++i)
+                {
+                    var child = VisualTreeHelper.GetChild(this.ChouFasmanGrid, i) as FrameworkElement;
+                    if (child != null && child.Name.Contains("HelixData_"))
+                    {
+                        tb = (TextBlock)child;
+                        tb.Visibility = System.Windows.Visibility.Collapsed;
+                    }
+                    if (child != null && child.Name.Contains("HelixChar_"))
+                    {
+                        tb = (TextBlock)child;
+                        tb.Visibility = System.Windows.Visibility.Collapsed;
+                    }
+                    if (child != null && child.Name.Contains("BetaData_"))
+                    {
+                        tb = (TextBlock)child;
+                        tb.Visibility = System.Windows.Visibility.Visible;
+                    }
+                    if (child != null && child.Name.Contains("BetaChar_"))
+                    {
+                        tb = (TextBlock)child;
+                        tb.Visibility = System.Windows.Visibility.Visible;
+                    }
+                    //if (child != null && child.Name.Contains("LoopData_"))
+                    //{
+                    //    tb = (TextBlock)child;
+                    //    tb.Visibility = System.Windows.Visibility.Collapsed;
+                    //}
+                }
             }
-            width = PrimaryWindow.ActualWidth;
-            height = PrimaryWindow.ActualHeight;
+        }
+
+        private void LoopCoil_Checked(object sender, RoutedEventArgs e)
+        {
+            TextBlock tb;
+            if (setupData.Sequence != "")
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(this.ChouFasmanGrid); ++i)
+                {
+                    var child = VisualTreeHelper.GetChild(this.ChouFasmanGrid, i) as FrameworkElement;
+                    if (child != null && child.Name.Contains("HelixData_"))
+                    {
+                        tb = (TextBlock)child;
+                        tb.Visibility = System.Windows.Visibility.Collapsed;
+                    }
+                    if (child != null && child.Name.Contains("HelixChar_"))
+                    {
+                        tb = (TextBlock)child;
+                        tb.Visibility = System.Windows.Visibility.Collapsed;
+                    }
+                    if (child != null && child.Name.Contains("BetaData_"))
+                    {
+                        tb = (TextBlock)child;
+                        tb.Visibility = System.Windows.Visibility.Collapsed;
+                    }
+                    if (child != null && child.Name.Contains("BetaChar_"))
+                    {
+                        tb = (TextBlock)child;
+                        tb.Visibility = System.Windows.Visibility.Collapsed;
+                    }
+                    //if (child != null && child.Name.Contains("LoopData_"))
+                    //{
+                    //    tb = (TextBlock)child;
+                    //    tb.Visibility = System.Windows.Visibility.Visible;
+                    //}
+                }
+            }
+        }
+
+        private void ChouFasmanShow_All_Checked(object sender, RoutedEventArgs e)
+        {
+            TextBlock tb;
+            if (setupData.Sequence != "")
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(this.ChouFasmanGrid); ++i)
+                {
+                    var child = VisualTreeHelper.GetChild(this.ChouFasmanGrid, i) as FrameworkElement;
+                    if (child != null && child.Name.Contains("HelixData_"))
+                    {
+                        tb = (TextBlock)child;
+                        tb.Visibility = System.Windows.Visibility.Visible;
+                    }
+                    if (child != null && child.Name.Contains("HelixChar_"))
+                    {
+                        tb = (TextBlock)child;
+                        tb.Visibility = System.Windows.Visibility.Visible;
+                    }
+                    if (child != null && child.Name.Contains("BetaData_"))
+                    {
+                        tb = (TextBlock)child;
+                        tb.Visibility = System.Windows.Visibility.Visible;
+                    }
+                    if (child != null && child.Name.Contains("BetaChar_"))
+                    {
+                        tb = (TextBlock)child;
+                        tb.Visibility = System.Windows.Visibility.Visible;
+                    }
+                    //if (child != null && child.Name.Contains("LoopData_"))
+                    //{
+                    //    tb = (TextBlock)child;
+                    //    tb.Visibility = System.Windows.Visibility.Visible;
+                    //}
+                }
+            }
+        }
+        private void ChouFasmanHide_All_Checked(object sender, RoutedEventArgs e)
+        {
+            TextBlock tb;
+            if (setupData.Sequence != "")
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(this.ChouFasmanGrid); ++i)
+                {
+                    var child = VisualTreeHelper.GetChild(this.ChouFasmanGrid, i) as FrameworkElement;
+                    if (child != null && child.Name.Contains("HelixData_"))
+                    {
+                        tb = (TextBlock)child;
+                        tb.Visibility = System.Windows.Visibility.Collapsed;
+                    }
+                    if (child != null && child.Name.Contains("HelixChar_"))
+                    {
+                        tb = (TextBlock)child;
+                        tb.Visibility = System.Windows.Visibility.Collapsed;
+                    }
+                    if (child != null && child.Name.Contains("BetaData_"))
+                    {
+                        tb = (TextBlock)child;
+                        tb.Visibility = System.Windows.Visibility.Collapsed;
+                    }
+                    if (child != null && child.Name.Contains("BetaChar_"))
+                    {
+                        tb = (TextBlock)child;
+                        tb.Visibility = System.Windows.Visibility.Collapsed;
+                    }
+                    //if (child != null && child.Name.Contains("LoopData_"))
+                    //{
+                    //    tb = (TextBlock)child;
+                    //    tb.Visibility = System.Windows.Visibility.Collapsed;
+                    //}
+                }
+            }
+        }
+        #endregion
+        #region TMHMM Controls
+
+        private void StartTMHMMButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (tmhmmActive)
+            {
+                //clear current tmhmm run
+                SeqButton_Click(tMHMMStartButton, null);
+                StartTmhmm_Button.Visibility = System.Windows.Visibility.Visible;
+                TMHMMDataGrid.Visibility = System.Windows.Visibility.Collapsed;
+                TMHMMSequenceTextBox.Text = "";
+                TMHMMDataTextBox.Text = "";
+                tmhmmActive = false;
+                FrameWithinGrid = null;
+
+            }
+            else
+            {
+                string jobID = "Job " + tMHMMJobNumberCounter;
+                TMHMMJobIDTextBox.Text = jobID;
+                tMHMMJobNumberCounter++;
+                string tmhmmSequence = "";
+                for (int i = tMHMMStart; i < tMHMMStop; ++i)
+                {
+                    tmhmmSequence += setupData.Sequence[i];
+                }
+                newTMHMMJob = new TMHMM(tmhmmSequence, jobID, tMHMMStart, tMHMMStop);
+                
+                StartTmhmm_Button.Visibility = System.Windows.Visibility.Collapsed;
+                TMHMMDataGrid.Visibility = System.Windows.Visibility.Visible;
+                TMHMMSequenceTextBox.Text = tmhmmSequence;
+                TMHMMDataTextBox.Text = "";
+                webWindow.Visibility = System.Windows.Visibility.Visible;
+                FrameWithinGrid = new Frame();
+                webWindow.Children.Add(FrameWithinGrid);
+                FrameWithinGrid.Source = new Uri("http://www.cbs.dtu.dk/services/TMHMM/", UriKind.RelativeOrAbsolute);
+
+
+                tmhmmActive = true;
+            }
+        }
+
+        private void TMHMMSubmitButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            //parse data into TMHMM Class then display graphical data in the correct place on screen
+            if (TMHMMDataTextBox.Text != "")
+            {
+                if (newTMHMMJob.ParseTMHMMData(TMHMMDataTextBox.Text))
+                {
+                    TMHMMJobList.Add(newTMHMMJob);
+                    DrawTMHMMGraph(newTMHMMJob);
+                    TMHMMJobSelectionComboBox.Items.Add(newTMHMMJob.JobID);
+                    TMHMMJobSelectionComboBox.SelectedIndex = TMHMMJobSelectionComboBox.Items.Count - 1;
+
+                    
+                    //clear current tmhmm run
+                    SeqButton_Click(tMHMMStartButton, null);
+                    StartTmhmm_Button.Visibility = System.Windows.Visibility.Visible;
+                    TMHMMDataGrid.Visibility = System.Windows.Visibility.Collapsed;
+                    TMHMMSequenceTextBox.Text = "";
+                    TMHMMDataTextBox.Text = "";
+                    webWindow.Visibility = System.Windows.Visibility.Collapsed;
+                    tmhmmActive = false;
+                    FrameWithinGrid = null;
+                    TMHMMShowAll_RadioButton.IsChecked = true;
+                }
+            }
+            else
+            {
+                //TODO show error
+            }
+        }
+
+        private void TMHMMCancelButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            //Cancel the entire TMHMM process
+            SeqButton_Click(tMHMMStartButton, null);
+            StartTmhmm_Button.Visibility = System.Windows.Visibility.Visible;
+            TMHMMDataGrid.Visibility = System.Windows.Visibility.Collapsed;
+            TMHMMGrid.Visibility = System.Windows.Visibility.Collapsed;
+            webWindow.Visibility = System.Windows.Visibility.Collapsed;
+            TMHMMSequenceTextBox.Text = "";
+            TMHMMDataTextBox.Text = "";
+            tmhmmActive = false;
+            newTMHMMJob = null;
+        }
+
+        private void TMHMMHelpButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            //pop up window with directions
+            PopUp popup = new PopUp();
+            popup.ShowDialog();
+            if (popup.OK)
+            {
+            }
+        }
+
+        private void DrawTMHMMGraph(TMHMM currentJob)
+        {
+            Polyline insideDataPolyline = new Polyline();
+            insideDataPolyline.StrokeThickness = 4;
+            insideDataPolyline.Stroke = Brushes.Cyan;
+            string name = "TMHMM_" + currentJob.JobID + "_InsideData";
+            insideDataPolyline.Name = name;
+            bool firstPoint = true;
+            int offset = 25 * (currentJob.Start);
+            int location = 15 + offset;
+            for (var i = 0; i < currentJob.InsideData.Length; ++i)
+            {
+                Point p = new Point(location, 600 - (currentJob.InsideData[i] * ScaleFactor * 100));
+                insideDataPolyline.Points.Add(p);
+                firstPoint = false;
+                location += 25;
+            }
+            GraphGrid.Children.Add(insideDataPolyline);
+
+            Polyline outsideDataPolyline = new Polyline();
+            outsideDataPolyline.StrokeThickness = 4;
+            outsideDataPolyline.Stroke = Brushes.ForestGreen;
+            name = "TMHMM_" + currentJob.JobID + "_OutsideData";
+            outsideDataPolyline.Name = name;
+            firstPoint = true;
+            offset = 25 * (currentJob.Start);
+            location = 15 + offset;
+            for (var i = 0; i < currentJob.OutsideData.Length; ++i)
+            {
+                Point p = new Point(location, 600 - (currentJob.OutsideData[i] * ScaleFactor * 100));
+                outsideDataPolyline.Points.Add(p);
+                firstPoint = false;
+                location += 25;
+            }
+            GraphGrid.Children.Add(outsideDataPolyline);
+
+            Polyline membrDataPolyline = new Polyline();
+            membrDataPolyline.StrokeThickness = 4;
+            membrDataPolyline.Stroke = Brushes.DarkRed;
+            name = "TMHMM_" + currentJob.JobID + "_MembrData";
+            membrDataPolyline.Name = name;
+            firstPoint = true;
+            offset = 25 * (currentJob.Start);
+            location = 15 + offset;
+            for (var i = 0; i < currentJob.MembrData.Length; ++i)
+            {
+                Point p = new Point(location, 600 - (currentJob.MembrData[i] * ScaleFactor * 100));
+                membrDataPolyline.Points.Add(p);
+                firstPoint = false;
+                location += 25;
+            }
+            GraphGrid.Children.Add(membrDataPolyline);
 
         }
 
-        private void MouseDownSequence_Clicked(object sender, MouseButtonEventArgs e)
+        private void DeleteTMHMMGraph()
+        {
+            TMHMMcurrentJobIndex = TMHMMJobSelectionComboBox.SelectedIndex;
+            string name = TMHMMJobSelectionComboBox.Text;
+            name = name;
+            Polyline line;
+            if (setupData.Sequence != "")
+            {
+                for (int i = VisualTreeHelper.GetChildrenCount(this.GraphGrid) - 1; i > 0; --i)
+                {
+                    var child = VisualTreeHelper.GetChild(this.GraphGrid, i) as FrameworkElement;
+
+                    if (child != null && child.Name.Contains(name))
+                    {
+                        GraphGrid.Children.Remove(child);
+                    }
+                }
+                TMHMMJobList.RemoveAt(TMHMMcurrentJobIndex);
+                TMHMMJobSelectionComboBox.Items.RemoveAt(TMHMMcurrentJobIndex);
+                if (TMHMMJobSelectionComboBox.Items.Count > 0)
+                {
+                    TMHMMJobSelectionComboBox.SelectedIndex = 0;
+                }
+
+            }
+        }
+
+        private void TMHMMinnerRegions_Checked(object sender, RoutedEventArgs e)
         {
 
+            TMHMMcurrentJobIndex = TMHMMJobSelectionComboBox.SelectedIndex;
+            string name = TMHMMJobSelectionComboBox.Text;
+            name = "TMHMM_" + name + "_InsideData";
+            Polyline line;
+            if (setupData.Sequence != "")
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(this.GraphGrid); ++i)
+                {
+                    var child = VisualTreeHelper.GetChild(this.GraphGrid, i) as FrameworkElement;
+
+                    if (child != null && child.Name == name)
+                    {
+                        line = (Polyline)child;
+                        line.Visibility = System.Windows.Visibility.Visible;
+                    }
+                    else if (child != null && child.Name.Contains("_InsideData"))
+                    {
+                        line = (Polyline)child;
+                        line.Visibility = System.Windows.Visibility.Hidden;
+                    }
+                    else if (child != null && child.Name.Contains("_MembrData"))
+                    {
+                        line = (Polyline)child;
+                        line.Visibility = System.Windows.Visibility.Hidden;
+                    }
+                    else if (child != null && child.Name.Contains("_OutsideData"))
+                    {
+                        line = (Polyline)child;
+                        line.Visibility = System.Windows.Visibility.Hidden;
+                    }
+
+                }
+            }
         }
+
+        private void TMHMMouterRegions_Checked(object sender, RoutedEventArgs e)
+        {
+            TMHMMcurrentJobIndex = TMHMMJobSelectionComboBox.SelectedIndex;
+            string name = TMHMMJobSelectionComboBox.Text;
+            name = "TMHMM_" + name + "_OutsideData";
+            Polyline line;
+            if (setupData.Sequence != "")
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(this.GraphGrid); ++i)
+                {
+                    var child = VisualTreeHelper.GetChild(this.GraphGrid, i) as FrameworkElement;
+
+                    if (child != null && child.Name == name)
+                    {
+                        line = (Polyline)child;
+                        line.Visibility = System.Windows.Visibility.Visible;
+                    }
+                    else if (child != null && child.Name.Contains("_InsideData"))
+                    {
+                        line = (Polyline)child;
+                        line.Visibility = System.Windows.Visibility.Hidden;
+                    }
+                    else if (child != null && child.Name.Contains("_MembrData"))
+                    {
+                        line = (Polyline)child;
+                        line.Visibility = System.Windows.Visibility.Hidden;
+                    }
+                    else if (child != null && child.Name.Contains("_OutsideData"))
+                    {
+                        line = (Polyline)child;
+                        line.Visibility = System.Windows.Visibility.Hidden;
+                    }
+
+                }
+            }
+        }
+
+        private void TMHMMmembrRegions_Checked(object sender, RoutedEventArgs e)
+        {
+            TMHMMcurrentJobIndex = TMHMMJobSelectionComboBox.SelectedIndex;
+            string name = TMHMMJobSelectionComboBox.Text;
+            name = "TMHMM_" + name + "_MembrData";
+            Polyline line;
+            if (setupData.Sequence != "")
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(this.GraphGrid); ++i)
+                {
+                    var child = VisualTreeHelper.GetChild(this.GraphGrid, i) as FrameworkElement;
+
+                    if (child != null && child.Name == name)
+                    {
+                        line = (Polyline)child;
+                        line.Visibility = System.Windows.Visibility.Visible;
+                    }
+                    else if (child != null && child.Name.Contains("_InsideData"))
+                    {
+                        line = (Polyline)child;
+                        line.Visibility = System.Windows.Visibility.Hidden;
+                    }
+                    else if (child != null && child.Name.Contains("_MembrData"))
+                    {
+                        line = (Polyline)child;
+                        line.Visibility = System.Windows.Visibility.Hidden;
+                    }
+                    else if (child != null && child.Name.Contains("_OutsideData"))
+                    {
+                        line = (Polyline)child;
+                        line.Visibility = System.Windows.Visibility.Hidden;
+                    }
+
+                }
+            }
+        }
+
+        private void TMHMMshowAll_Checked(object sender, RoutedEventArgs e)
+        {
+            TMHMMcurrentJobIndex = TMHMMJobSelectionComboBox.SelectedIndex;
+            string name = TMHMMJobSelectionComboBox.Text;
+            name = "TMHMM_" + name;
+            Polyline line;
+            if (setupData.Sequence != "")
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(this.GraphGrid); ++i)
+                {
+                    var child = VisualTreeHelper.GetChild(this.GraphGrid, i) as FrameworkElement;
+
+                    if (child != null && child.Name.Contains(name))
+                    {
+                        line = (Polyline)child;
+                        line.Visibility = System.Windows.Visibility.Visible;
+                    }
+                    else if (child != null && child.Name.Contains("_InsideData"))
+                    {
+                        line = (Polyline)child;
+                        line.Visibility = System.Windows.Visibility.Hidden;
+                    }
+                    else if (child != null && child.Name.Contains("_MembrData"))
+                    {
+                        line = (Polyline)child;
+                        line.Visibility = System.Windows.Visibility.Hidden;
+                    }
+                    else if (child != null && child.Name.Contains("_OutsideData"))
+                    {
+                        line = (Polyline)child;
+                        line.Visibility = System.Windows.Visibility.Hidden;
+                    }
+
+                }
+            }
+        }
+
+        private void TMHMMhideAll_Checked(object sender, RoutedEventArgs e)
+        {
+            TMHMMcurrentJobIndex = TMHMMJobSelectionComboBox.SelectedIndex;
+            string name = TMHMMJobSelectionComboBox.Text;
+            name = "TMHMM_" + name;
+            Polyline line;
+            if (setupData.Sequence != "")
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(this.GraphGrid); ++i)
+                {
+                    var child = VisualTreeHelper.GetChild(this.GraphGrid, i) as FrameworkElement;
+
+                    if (child != null && child.Name.Contains(name))
+                    {
+                        line = (Polyline)child;
+                        line.Visibility = System.Windows.Visibility.Hidden;
+                    }
+                    else if (child != null && child.Name.Contains("_InsideData"))
+                    {
+                        line = (Polyline)child;
+                        line.Visibility = System.Windows.Visibility.Hidden;
+                    }
+                    else if (child != null && child.Name.Contains("_MembrData"))
+                    {
+                        line = (Polyline)child;
+                        line.Visibility = System.Windows.Visibility.Hidden;
+                    }
+                    else if (child != null && child.Name.Contains("_OutsideData"))
+                    {
+                        line = (Polyline)child;
+                        line.Visibility = System.Windows.Visibility.Hidden;
+                    }
+
+                }
+            }
+        }
+
+        private void TMHMMDeleteJobButton_Clicked(object sender, RoutedEventArgs e)
+        {
+            DeleteTMHMMGraph();
+        }
+
+        private void TMHMMJobSelectionComboBoxSelection_Changed(object sender, SelectionChangedEventArgs e)
+        {
+            
+            ComboBox selectedItem = (ComboBox)sender;
+            if (selectedItem.SelectedValue != null)
+            {
+                TMHMMcurrentJobIndex = selectedItem.SelectedIndex;
+                string name = selectedItem.SelectedValue.ToString();
+                Polyline line;
+                if (setupData.Sequence != "")
+                {
+                    for (int i = 0; i < VisualTreeHelper.GetChildrenCount(this.GraphGrid); ++i)
+                    {
+                        var child = VisualTreeHelper.GetChild(this.GraphGrid, i) as FrameworkElement;
+
+                        if (child != null && child.Name.Contains(name))
+                        {
+                            line = (Polyline)child;
+                            line.Visibility = System.Windows.Visibility.Visible;
+                        }
+                        else if (child != null && child.Name.Contains("_InsideData"))
+                        {
+                            line = (Polyline)child;
+                            line.Visibility = System.Windows.Visibility.Hidden;
+                        }
+                        else if (child != null && child.Name.Contains("_MembrData"))
+                        {
+                            line = (Polyline)child;
+                            line.Visibility = System.Windows.Visibility.Hidden;
+                        }
+                        else if (child != null && child.Name.Contains("_OutsideData"))
+                        {
+                            line = (Polyline)child;
+                            line.Visibility = System.Windows.Visibility.Hidden;
+                        }
+
+                    }
+                }
+            }
+        } 
         #endregion
 
     }

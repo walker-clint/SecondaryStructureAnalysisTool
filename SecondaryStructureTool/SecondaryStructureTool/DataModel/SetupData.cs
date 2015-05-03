@@ -224,9 +224,7 @@ namespace SecondaryStructureTool.DataModel
                     {
                         ++pipes;
                     }
-
                 }
-                
                 //'|',
                 char[] delimiterChars = { '\n', '\r' };
                 string[] tokens = FASTA.Split(delimiterChars);
@@ -264,7 +262,6 @@ namespace SecondaryStructureTool.DataModel
                                         }
                                         decoding = false;
                                         break;
-
                                     case 1:
                                         //EMBL Data Library                 emb|accession|locus
                                         break;
@@ -330,18 +327,11 @@ namespace SecondaryStructureTool.DataModel
                                         break;
                                     default:
                                         break;
-
                                 }
                             }
                         }
                     }
-
-
                 }
-
-
-
-
                 BadSequence = false;
                 string seqString = "";
                 for (var i = sequenceStart; i < tokens.Length; ++i)
@@ -365,17 +355,11 @@ namespace SecondaryStructureTool.DataModel
                             seqString += tokens[i];
                         }
                     }
-
-
                 }
                 Sequence = seqString;
-
             } else {
                 Sequence = FASTA;
-               
             }
-
-
         }
         #endregion
 
@@ -384,7 +368,7 @@ namespace SecondaryStructureTool.DataModel
 
         /// <summary>
         /// To use INotify Property changed for databinding to the GUI
-        /// reference: using System.ComponentModel;
+        /// reference: using System.ComponentModel; and using System.Runtime.CompilerServices;
         /// add attribute ClassName : INotifyPropertyChanged
         /// copy Events and Event Method Regions into your class
         /// set up all private variables to be bound to GUI with a property:
@@ -392,7 +376,7 @@ namespace SecondaryStructureTool.DataModel
         ///     {
         ///         get { return variableFieldName; }
         ///         set { 
-        ///             variableFieldName = value.ToUpper();
+        ///             variableFieldName = value;
         ///             NotifyPropertyChanged("VariablePropertyName");
         ///         }
         ///     }
