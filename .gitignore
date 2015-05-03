@@ -57,3 +57,4 @@ SecondaryStructureTool/SecondaryStructureTool/obj/Debug/DesignTimeResolveAssembl
 *.exe
 *.cache
 *.suo
+*.cs
