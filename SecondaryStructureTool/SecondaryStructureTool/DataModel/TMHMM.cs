@@ -146,6 +146,8 @@ namespace SecondaryStructureTool.DataModel
         {
             Seq = _seq;
             JobID = _jobID;
+            Start = _start;
+            Stop = _stop;
             InsideData = new float[Seq.Length];
             MembrData = new float[Seq.Length];
             OutsideData = new float[Seq.Length];
